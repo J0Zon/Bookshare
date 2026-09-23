@@ -170,13 +170,46 @@ st.markdown(
         border: 1px solid #DACABD !important;
         background-color: #FFFFFF !important;
     }
+
+    /* Seller Center Specific Styling */
+    .seller-header-card {
+        background-color: #FFFFFF;
+        border: 1px solid #EADBCE;
+        border-radius: 20px;
+        padding: 20px 24px;
+        box-shadow: 0 4px 14px rgba(61,46,36,0.04);
+        margin-bottom: 20px;
+    }
+    .listing-type-card {
+        border: 1px solid #EADBCE;
+        border-radius: 14px;
+        padding: 14px;
+        background-color: #FFFFFF;
+        text-align: center;
+        transition: all 0.2s;
+    }
+    .pricing-box-container {
+        background-color: #FAF5EF;
+        border: 1px solid #EADBCE;
+        border-radius: 16px;
+        padding: 16px;
+        margin-top: 14px;
+    }
+    .dropzone-container {
+        border: 2px dashed #D5C5B5;
+        background-color: #FAF5EF;
+        border-radius: 16px;
+        padding: 28px 16px;
+        text-align: center;
+        margin-bottom: 14px;
+    }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
 # ==============================================================================
-# 2. Complete 8 Books Mock Data
+# 2. Complete 8 Books Mock Data for Storefront
 # ==============================================================================
 MOCK_BOOKS = [
     {
@@ -384,6 +417,9 @@ MOCK_BOOKS = [
 if 'current_view' not in st.session_state:
     st.session_state.current_view = 'home'  # 'home', 'detail', 'cart', 'order_success', 'seller'
 
+if 'seller_subview' not in st.session_state:
+    st.session_state.seller_subview = 'add_book'  # 'add_book' or 'shelf'
+
 if 'selected_book_id' not in st.session_state:
     st.session_state.selected_book_id = 1
 
@@ -461,6 +497,44 @@ if 'rental_days_choice' not in st.session_state:
 if 'last_order' not in st.session_state:
     st.session_state.last_order = None
 
+# Meena's Bookshelf Data (Matching Image 2)
+if 'meena_books' not in st.session_state:
+    st.session_state.meena_books = [
+        {
+            'id': 101,
+            'title': 'เพราะชีวิตดีได้กว่าที่เป็น (Atomic Habits)',
+            'author': 'James Clear • แปลโดย ประพาส ปานพุ่ม',
+            'isbn': '978-616-18-2898-1',
+            'condition': 'สภาพ 95%',
+            'type_badge': '● เช่า & ขาย',
+            'price_structure': 'เช่า ฿7/วัน (฿42/สัปดาห์)<br>มัดจำ ฿200 • ขาย ฿230',
+            'status': '🟢 ว่าง พร้อมให้เช่า/ซื้อ',
+            'img': 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=150&q=80'
+        },
+        {
+            'id': 102,
+            'title': 'ถ้าแมวตัวนั้นหายไปจากโลกนี้',
+            'author': 'เกนกิ คาวามูระ • สภาพ 95% เนี๊ยบ',
+            'isbn': '978-616-79-9742-1',
+            'condition': 'สภาพ 95%',
+            'type_badge': '🔁 เช่ายืมอย่างเดียว',
+            'price_structure': 'เช่า ฿5/วัน (฿30/สัปดาห์)<br>มัดจำ ฿150',
+            'status': '🟢 ว่าง พร้อมให้เช่า/ซื้อ',
+            'img': 'https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=150&q=80'
+        },
+        {
+            'id': 103,
+            'title': 'The Kinfolk Home: Interior Spaces',
+            'author': 'Nathan Williams • ปกแข็งสภาพ 98%',
+            'isbn': '978-157-96-5665-2',
+            'condition': 'สภาพ 98%',
+            'type_badge': '🏷️ ขายอย่างเดียว',
+            'price_structure': '฿1,150 <span style="text-decoration:line-through; color:#8D7B68; font-size:11px;">฿1,650</span><br>มัดจำคืนคลัง ฿300',
+            'status': '🟢 ว่าง พร้อมให้เช่า/ซื้อ',
+            'img': 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=150&q=80'
+        }
+    ]
+
 def get_book(book_id):
     for b in MOCK_BOOKS:
         if b['id'] == book_id:
@@ -536,6 +610,7 @@ with c_nav:
     with n4:
         if st.button("สำหรับผู้ขาย", key="nav_s", use_container_width=True):
             st.session_state.current_view = 'seller'
+            st.session_state.seller_subview = 'add_book'
             st.rerun()
 
 with c_rent_btn:
@@ -837,7 +912,6 @@ elif st.session_state.current_view == 'detail':
                 unsafe_allow_html=True
             )
 
-            # Quick Chips
             st.caption("เลือกด่วน:")
             q1, q2, q3, q4 = st.columns(4)
             with q1:
@@ -1185,7 +1259,6 @@ elif st.session_state.current_view == 'cart':
 
             st.markdown("</div>", unsafe_allow_html=True)
 
-            # Validation check
             can_checkout = True
             if not st.session_state.user['logged_in']:
                 can_checkout = False
@@ -1276,28 +1349,316 @@ elif st.session_state.current_view == 'order_success':
 
 
 # ==============================================================================
-# 10. VIEW 5: SELLER DASHBOARD
+# 10. VIEW 5: SELLER CENTER & ADD BOOK (Overhauled per Images 1 & 2)
 # ==============================================================================
 elif st.session_state.current_view == 'seller':
-    st.markdown("<h2 style='color:#4A3528; margin:0 0 16px 0;'>🏪 สำหรับผู้ขาย &amp; เจ้าของตู้หนังสือ</h2>", unsafe_allow_html=True)
-    st.info("เปิดร้านแบ่งปันหนังสือของคุณได้ง่ายๆ กำหนดค่ายืมต่อวันหรือราคาขายขาดได้ตามต้องการ")
 
-    with st.form("add_new_book"):
-        nb_title = st.text_input("ชื่อหนังสือ", placeholder="เช่น คิดแบบยิว ทำแบบญี่ปุ่น")
-        nb_author = st.text_input("ผู้แต่ง", placeholder="เช่น ฮอนดะ เคน")
-        nb_cat = st.selectbox("หมวดหมู่", ["จิตวิทยา & พัฒนาตนเอง", "วรรณกรรม & นิยายแปล", "ธุรกิจ & การลงทุน", "หนังสือภาพ & ไลฟ์สไตล์"])
-        nb_rent = st.number_input("ค่ายืมต่อวัน (บาท)", min_value=1, value=5)
-        nb_buy = st.number_input("ราคาขายขาด (บาท)", min_value=10, value=200)
-        submitted = st.form_submit_button("บันทึกหนังสือเข้าตู้")
-        if submitted:
-            if nb_title:
-                st.success(f"ลงทะเบียน '{nb_title}' เรียบร้อยแล้ว!")
-            else:
-                st.error("กรุณาระบุชื่อหนังสือ")
+    # --------------------------------------------------------------------------
+    # SUBVIEW A: ADD NEW BOOK FORM (Exact layout of Image 1)
+    # --------------------------------------------------------------------------
+    if st.session_state.seller_subview == 'add_book':
+        
+        # Header banner
+        col_hdr_l, col_hdr_r = st.columns([8, 3])
+        with col_hdr_l:
+            st.markdown(
+                """
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
+                    <div style="background-color:#4A3528; color:#FAF5EF; width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:22px;">
+                        📄
+                    </div>
+                    <div>
+                        <h2 style="margin:0; font-size:22px; color:#4A3528;">ลงทะเบียนหนังสือใหม่เข้าสู่ระบบ (Add New Book)</h2>
+                        <span style="font-size:12px; color:#8D7B68;">กรอกข้อมูลให้ครบถ้วนเพื่อเพิ่มโอกาสให้นักอ่านค้นพบหนังสือและไว้วางใจในการเช่าหรือซื้อ</span>
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+        with col_hdr_r:
+            st.markdown(
+                """
+                <div style="text-align:right; padding-top:6px;">
+                    <span style="background-color:#EAF2E8; color:#2F5930; border:1px solid #C0DAC0; padding:6px 14px; border-radius:999px; font-size:11px; font-weight:600;">
+                        🛡️ มีระบบคุ้มครองประกันมัดจำ BookShare
+                    </span>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
-    if st.button("← กลับหน้าหลัก", key="btn_back_sell"):
+        # Main 2 Columns Form Layout (White Card Container)
+        st.markdown("<div style='background-color:#FFFFFF; border:1px solid #EADBCE; border-radius:24px; padding:24px; box-shadow:0 6px 20px rgba(61,46,36,0.04);'>", unsafe_allow_html=True)
+        col_form_left, col_form_right = st.columns([4.2, 5.8], gap="large")
+
+        # LEFT COLUMN: Photos & Condition
+        with col_form_left:
+            st.markdown("<b style='font-size:13px; color:#382B24;'>รูปถ่ายปกและสภาพหนังสือ * <span style='font-size:11px; color:#8D7B68; font-weight:normal;'>(อย่างน้อย 2 ภาพ)</span></b>", unsafe_allow_html=True)
+            
+            # Dropzone simulation
+            st.markdown(
+                """
+                <div class="dropzone-container">
+                    <div style="font-size:32px; margin-bottom:4px;">🖼️</div>
+                    <b style="font-size:13px; color:#4A3528;">คลิกเพื่ออัปโหลด หรือลากวางไฟล์ที่นี่</b><br>
+                    <span style="font-size:11px; color:#8D7B68;">แนะนำ: ถ่ายปกหน้า, ปกหลัง, สันหนังสือ และรอยขีดเขียน (ถ้ามี)</span><br>
+                    <span style="font-size:10px; color:#A4907C; margin-top:4px; display:inline-block;">รองรับ JPG, PNG, WEBP • ไม่เกิน 10MB/รูป</span>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            # Upload preview thumbnails row
+            p1, p2, p3 = st.columns(3)
+            with p1:
+                st.markdown(
+                    """
+                    <div style="position:relative; border-radius:12px; overflow:hidden; border:1px solid #EADBCE; aspect-ratio:3/4;">
+                        <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=300&q=80" style="width:100%; height:100%; object-fit:cover;">
+                        <div style="position:absolute; top:4px; left:4px; background-color:rgba(74,53,40,0.85); color:#FFFFFF; font-size:9px; padding:2px 6px; border-radius:4px; font-weight:600;">
+                            รูปปกหลัก
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+            with p2:
+                st.markdown(
+                    """
+                    <div style="position:relative; border-radius:12px; overflow:hidden; border:1px solid #EADBCE; aspect-ratio:3/4;">
+                        <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=300&q=80" style="width:100%; height:100%; object-fit:cover;">
+                        <div style="position:absolute; top:4px; left:4px; background-color:rgba(74,53,40,0.85); color:#FFFFFF; font-size:9px; padding:2px 6px; border-radius:4px; font-weight:600;">
+                            สันกระดาษ
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+            with p3:
+                st.markdown(
+                    """
+                    <div style="border:1px dashed #D5C5B5; border-radius:12px; aspect-ratio:3/4; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#8D7B68; background-color:#FAF5EF; cursor:pointer;">
+                        <span style="font-size:20px; font-weight:bold;">+</span>
+                        <span style="font-size:11px;">เพิ่มรูป</span>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+            st.markdown("<div style='margin-bottom:16px;'></div>", unsafe_allow_html=True)
+
+            # Condition Evaluation Slider
+            col_cond_t, col_cond_b = st.columns([2.5, 1.8])
+            with col_cond_t:
+                st.markdown("<b style='font-size:13px; color:#382B24;'>ประเมินสภาพหนังสือ (Condition) *</b>", unsafe_allow_html=True)
+            with col_cond_b:
+                st.markdown("<div style='text-align:right;'><span style='background-color:#EAF2E8; color:#2F5930; font-size:11px; font-weight:700; padding:2px 8px; border-radius:6px;'>95% ดีเยี่ยม (เหมือนใหม่)</span></div>", unsafe_allow_html=True)
+
+            condition_val = st.select_slider(
+                "สภาพหนังสือ",
+                options=["70% เก่าเก็บ/มีรอย", "85% ปานกลาง", "95% ดีมาก", "100% มือหนึ่ง"],
+                value="95% ดีมาก",
+                label_visibility="collapsed"
+            )
+
+            st.markdown("<span style='font-size:11px; color:#6C5E53;'>หมายเหตุสภาพเพิ่มเติม:</span>", unsafe_allow_html=True)
+            cond_note = st.text_area(
+                "หมายเหตุ",
+                value="เช่น ห่อปกพลาสติกแล้ว ไม่มีรอยไฮไลท์ สันกระดาษสะอาด ไม่มีหน้าพับ...",
+                height=70,
+                label_visibility="collapsed"
+            )
+
+        # RIGHT COLUMN: Book Details & Pricing
+        with col_form_right:
+            b_title_input = st.text_input("ชื่อหนังสือ (Book Title) *", value="สุขุม ละเมียด ละไม (Wabi Sabi)")
+            
+            c_auth, c_isbn = st.columns([1, 1])
+            with c_auth:
+                b_author_input = st.text_input("ผู้แต่ง (Author) *", value="Beth Kempton")
+            with c_isbn:
+                b_isbn_input = st.text_input("เลข ISBN (13 หลัก)", value="978-616-04-4521-9", help="ดึงข้อมูลอัตโนมัติจากฐานข้อมูล")
+
+            c_pub, c_cat = st.columns([1, 1])
+            with c_pub:
+                b_pub_input = st.text_input("สำนักพิมพ์ (Publisher)", value="BookMaker Publishing")
+            with c_cat:
+                b_cat_input = st.selectbox("หมวดหมู่หนังสือ *", ["พัฒนาตนเอง / จิตวิทยา", "วรรณกรรม & นิยายแปล", "ธุรกิจ & การลงทุน", "หนังสือภาพ & ไลฟ์สไตล์", "วรรณกรรมคลาสสิก"])
+
+            st.markdown("<b style='font-size:13px; color:#382B24; display:block; margin:14px 0 6px 0;'>ประเภทการลงรายการ (Listing Option) *</b>", unsafe_allow_html=True)
+            listing_mode = st.radio(
+                "ประเภทการลงรายการ",
+                options=["ให้เช่าอย่างเดียว", "ขายอย่างเดียว", "ได้ทั้งเช่าและขาย ★"],
+                index=2,
+                horizontal=True,
+                label_visibility="collapsed"
+            )
+
+            # Pricing Box (Exact layout of Image 1)
+            st.markdown(
+                """
+                <div class="pricing-box-container">
+                    <b style="font-size:13px; color:#4A3528; display:flex; align-items:center; gap:6px; margin-bottom:10px;">
+                        <span>💳</span> กำหนดราคาและหลักประกันความเสียหาย
+                    </b>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            p_col1, p_col2, p_col3 = st.columns(3)
+            with p_col1:
+                price_sale = st.number_input("ราคาขายส่งต่อ (฿)", min_value=0, value=240, step=10)
+                st.caption("เทียบราคาปก ฿320 (ลด 25%)")
+            with p_col2:
+                price_rent = st.number_input("ค่าเช่าต่อวัน (฿/วัน)", min_value=0, value=6, step=1)
+                st.caption("หรือ ฿35 / สัปดาห์")
+            with p_col3:
+                price_deposit = st.number_input("ค่ามัดจำประกันหนังสือ (฿)", min_value=0, value=150, step=10)
+                st.caption("คืนผู้เช่าเมื่อตรวจรับเล่ม")
+
+            st.markdown("<div style='margin-top:20px;'></div>", unsafe_allow_html=True)
+
+            # Action Buttons Row
+            b_act_l, b_act_r = st.columns([1, 2])
+            with b_act_l:
+                if st.button("ล้างข้อมูล", key="btn_clear_form", use_container_width=True):
+                    st.rerun()
+            with b_act_r:
+                if st.button("💾 บันทึกและขึ้นแสดงบนระบบทันที", key="btn_submit_add_book", use_container_width=True):
+                    # Add new book into Meena's shelf
+                    new_item = {
+                        'id': len(st.session_state.meena_books) + 101,
+                        'title': b_title_input,
+                        'author': f"{b_author_input} • แปลภาษาไทย",
+                        'isbn': b_isbn_input,
+                        'condition': condition_val.split()[0],
+                        'type_badge': f"● {listing_mode}",
+                        'price_structure': f"เช่า ฿{price_rent}/วัน • ขาย ฿{price_sale}<br>มัดจำ ฿{price_deposit} (จากราคาปก ฿320)",
+                        'status': '🟢 ว่าง พร้อมให้เช่า/ซื้อ',
+                        'img': 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=150&q=80'
+                    }
+                    st.session_state.meena_books.append(new_item)
+                    st.toast(f"บันทึกหนังสือ '{b_title_input}' ขึ้นร้านค้าเรียบร้อยแล้ว!", icon="🎉")
+                    st.session_state.seller_subview = 'shelf'
+                    st.rerun()
+
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    # --------------------------------------------------------------------------
+    # SUBVIEW B: SELLER'S SHELF & INVENTORY TABLE (Exact layout of Image 2)
+    # --------------------------------------------------------------------------
+    elif st.session_state.seller_subview == 'shelf':
+        
+        # Store Profile Banner
+        col_sb_l, col_sb_r = st.columns([8, 3.5])
+        with col_sb_l:
+            st.markdown(
+                """
+                <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;">
+                    <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=120&q=80" style="width:58px; height:58px; border-radius:14px; object-fit:cover; border:1px solid #EADBCE;">
+                    <div>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <h2 style="margin:0; font-size:22px; color:#4A3528;">ร้านหนังสือของมีนา (Meena's Shelf)</h2>
+                            <span style="background-color:#EAF2E8; color:#2F5930; font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px;">
+                                ผู้ให้เช่าระดับพรีเมียม ★ 4.9
+                            </span>
+                        </div>
+                        <span style="font-size:12px; color:#8D7B68;">ศูนย์จัดการหนังสือ ส่งต่อความรู้ และติดตามรายการหนังสือของคุณแบบเรียลไทม์</span>
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+        with col_sb_r:
+            st.markdown("<div style='padding-top:8px;'>", unsafe_allow_html=True)
+            if st.button("➕ ลงขาย/ให้เช่าหนังสือใหม่", key="btn_goto_add_book", use_container_width=True):
+                st.session_state.seller_subview = 'add_book'
+                st.rerun()
+            st.markdown("</div>", unsafe_allow_html=True)
+
+        # Inventory Table Container (Note: Per user's instruction, income, currently rented, and shipping cards are omitted)
+        st.markdown(
+            f"""
+            <div style="background-color:#FFFFFF; border:1px solid #EADBCE; border-radius:24px; padding:24px; box-shadow:0 6px 20px rgba(61,46,36,0.04);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid #EADBCE; padding-bottom:14px;">
+                    <div>
+                        <h3 style="margin:0; font-size:18px; color:#4A3528;">จัดการสต็อกและสถานะการเช่ายืม</h3>
+                        <span style="font-size:12px; color:#8D7B68;">ติดตามรายการหนังสือของคุณ และตรวจสอบความพร้อมในการให้บริการ ({len(st.session_state.meena_books)} เล่ม)</span>
+                    </div>
+                    <span style="background-color:#FAF5EF; border:1px solid #EADBCE; padding:5px 12px; border-radius:999px; font-size:12px; color:#4A3528; font-weight:600;">
+                        หนังสือทั้งหมดในคลัง: {len(st.session_state.meena_books)} เล่ม
+                    </span>
+                </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        # Table Header Row
+        th1, th2, th3, th4, th5 = st.columns([3.8, 1.8, 2.4, 2.2, 1.8])
+        with th1:
+            st.markdown("<b style='font-size:12px; color:#8D7B68;'>ข้อมูลหนังสือ</b>", unsafe_allow_html=True)
+        with th2:
+            st.markdown("<b style='font-size:12px; color:#8D7B68;'>รูปแบบรายการ</b>", unsafe_allow_html=True)
+        with th3:
+            st.markdown("<b style='font-size:12px; color:#8D7B68;'>โครงสร้างราคา</b>", unsafe_allow_html=True)
+        with th4:
+            st.markdown("<b style='font-size:12px; color:#8D7B68;'>สถานะปัจจุบัน</b>", unsafe_allow_html=True)
+        with th5:
+            st.markdown("<b style='font-size:12px; color:#8D7B68;'>การจัดการ</b>", unsafe_allow_html=True)
+
+        st.markdown("<hr style='border:0; border-top:1px solid #EADBCE; margin:6px 0 14px 0;'>", unsafe_allow_html=True)
+
+        # Render Shelf Books
+        for s_idx, sb in enumerate(st.session_state.meena_books):
+            r1, r2, r3, r4, r5 = st.columns([3.8, 1.8, 2.4, 2.2, 1.8])
+            with r1:
+                c_img, c_info = st.columns([1, 3.2])
+                with c_img:
+                    st.image(sb['img'], width=50)
+                with c_info:
+                    st.markdown(
+                        f"""
+                        <b style="font-size:13px; color:#4A3528;">{sb['title']}</b><br>
+                        <span style="font-size:11px; color:#8D7B68;">{sb['author']}</span><br>
+                        <span style="font-size:10px; color:#A4907C;">ISBN: {sb['isbn']}</span>
+                        """,
+                        unsafe_allow_html=True
+                    )
+            with r2:
+                badge_bg = "#EAF2E8" if "เช่า & ขาย" in sb['type_badge'] else ("#FAEEE1" if "ขาย" in sb['type_badge'] else "#FAF5EF")
+                badge_fg = "#2F5930" if "เช่า & ขาย" in sb['type_badge'] else ("#9C5212" if "ขาย" in sb['type_badge'] else "#4A3528")
+                st.markdown(
+                    f"""
+                    <span style="background-color:{badge_bg}; color:{badge_fg}; font-size:11px; font-weight:700; padding:3px 10px; border-radius:999px;">
+                        {sb['type_badge']}
+                    </span>
+                    """,
+                    unsafe_allow_html=True
+                )
+            with r3:
+                st.markdown(f"<div style='font-size:12px; color:#4A3528; line-height:1.5;'>{sb['price_structure']}</div>", unsafe_allow_html=True)
+            with r4:
+                st.markdown(f"<span style='background-color:#EAF2E8; color:#2F5930; font-size:11px; font-weight:600; padding:3px 8px; border-radius:6px;'>{sb['status']}</span>", unsafe_allow_html=True)
+            with r5:
+                act_c1, act_c2 = st.columns(2)
+                with act_c1:
+                    if st.button("✏️", key=f"edit_sb_{sb['id']}", help="แก้ไขข้อมูล"):
+                        st.toast(f"แก้ไขข้อมูล {sb['title']}")
+                with act_c2:
+                    if st.button("🗑️", key=f"del_sb_{sb['id']}", help="ลบเล่มนี้"):
+                        st.session_state.meena_books.pop(s_idx)
+                        st.rerun()
+
+            st.markdown("<hr style='border:0; border-top:1px dashed #E8DDD0; margin:10px 0;'>", unsafe_allow_html=True)
+
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    st.markdown("<div style='margin-top:20px; text-align:center;'>", unsafe_allow_html=True)
+    if st.button("← กลับสู่หน้าหลัก", key="btn_seller_back_to_home"):
         st.session_state.current_view = 'home'
         st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # ==============================================================================
 # 11. Footer
