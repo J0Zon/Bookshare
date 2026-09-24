@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>BookShare - ร้านหนังสือ &amp; เช่ายืมออนไลน์</title>
-  
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Mali:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Mali:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    rel="stylesheet" />
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -44,18 +49,26 @@
       background-color: #F8F3EC;
       color: #382B24;
     }
-    h1, h2, h3, .font-cute {
+
+    h1,
+    h2,
+    h3,
+    .font-cute {
       font-family: 'Mali', cursive;
     }
-    ::-webkit-scrollbar { display: none; }
+
+    ::-webkit-scrollbar {
+      display: none;
+    }
   </style>
 </head>
+
 <body class="bg-earth-bg text-earth-text antialiased">
 
   <!-- Header Navigation -->
   <header class="sticky top-0 w-full z-40 bg-earth-bg/95 backdrop-blur-md border-b border-earth-border">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between gap-4">
-      
+
       <!-- Brand Logo -->
       <div class="flex items-center gap-3 cursor-pointer" onclick="showView('home')">
         <span class="material-symbols-outlined text-4xl text-earth-accent">menu_book</span>
@@ -67,35 +80,46 @@
 
       <!-- Search Input -->
       <div class="relative hidden md:block w-72 lg:w-96">
-        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-earth-muted text-lg">search</span>
-        <input type="search" id="header-search" oninput="filterBooks()" placeholder="ค้นหาชื่อหนังสือ, ผู้แต่ง, หมวดหมู่..." class="w-full pl-9 pr-4 py-2 bg-white rounded-full text-sm border border-earth-border focus:outline-none focus:ring-2 focus:ring-earth-accent transition"/>
+        <span
+          class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-earth-muted text-lg">search</span>
+        <input type="search" id="header-search" oninput="filterBooks()"
+          placeholder="ค้นหาชื่อหนังสือ, ผู้แต่ง, หมวดหมู่..."
+          class="w-full pl-9 pr-4 py-2 bg-white rounded-full text-sm border border-earth-border focus:outline-none focus:ring-2 focus:ring-earth-accent transition" />
       </div>
 
       <!-- Navigation Links -->
       <nav class="hidden lg:flex items-center gap-6 font-medium text-sm">
-        <button onclick="showView('home')" class="text-earth-primary font-bold hover:text-earth-accent transition">หน้าแรก</button>
-        <button onclick="showView('home')" class="text-earth-muted hover:text-earth-primary transition">สำรวจหนังสือ</button>
-        <button onclick="openModal('how-modal')" class="text-earth-muted hover:text-earth-primary transition">วิธีการยืม-คืน</button>
-        <button onclick="showView('seller-add')" class="text-earth-muted hover:text-earth-primary transition">สำหรับผู้ขาย/ผู้ให้เช่า</button>
+        <button onclick="showView('home')"
+          class="text-earth-primary font-bold hover:text-earth-accent transition">หน้าแรก</button>
+        <button onclick="showView('home')"
+          class="text-earth-muted hover:text-earth-primary transition">สำรวจหนังสือ</button>
+        <button onclick="openModal('how-modal')"
+          class="text-earth-muted hover:text-earth-primary transition">วิธีการยืม-คืน</button>
+        <button onclick="showView('seller-add')"
+          class="text-earth-muted hover:text-earth-primary transition">สำหรับผู้ขาย/ผู้ให้เช่า</button>
       </nav>
 
       <!-- Cart Counters & User Profile -->
       <div class="flex items-center gap-3">
         <!-- ยืม Cart Badge -->
-        <button onclick="showView('cart')" class="relative py-2 px-3 rounded-full bg-earth-sage-light text-earth-sage-dark border border-earth-sage/30 hover:bg-earth-sage/20 transition flex items-center gap-1.5 shadow-sm">
+        <button onclick="showView('cart')"
+          class="relative py-2 px-3 rounded-full bg-earth-sage-light text-earth-sage-dark border border-earth-sage/30 hover:bg-earth-sage/20 transition flex items-center gap-1.5 shadow-sm">
           <span class="material-symbols-outlined text-lg">auto_stories</span>
           <span class="text-xs font-bold" id="badge-rent-count">ยืม (2)</span>
         </button>
 
         <!-- ซื้อ Cart Badge -->
-        <button onclick="showView('cart')" class="relative py-2 px-3 rounded-full bg-earth-accent/15 text-earth-accent-hover border border-earth-accent/30 hover:bg-earth-accent/25 transition flex items-center gap-1.5 shadow-sm">
+        <button onclick="showView('cart')"
+          class="relative py-2 px-3 rounded-full bg-earth-accent/15 text-earth-accent-hover border border-earth-accent/30 hover:bg-earth-accent/25 transition flex items-center gap-1.5 shadow-sm">
           <span class="material-symbols-outlined text-lg">shopping_bag</span>
           <span class="text-xs font-bold" id="badge-buy-count">ซื้อ (1)</span>
         </button>
-        
+
         <!-- User Profile Pill -->
-        <div id="user-profile-widget" onclick="openLoginModal()" class="flex items-center gap-2 pl-2 border-l border-earth-border cursor-pointer">
-          <div class="w-9 h-9 rounded-full bg-earth-secondary flex items-center justify-center font-cute font-bold text-earth-primary border border-earth-border">
+        <div id="user-profile-widget" onclick="openLoginModal()"
+          class="flex items-center gap-2 pl-2 border-l border-earth-border cursor-pointer">
+          <div
+            class="w-9 h-9 rounded-full bg-earth-secondary flex items-center justify-center font-cute font-bold text-earth-primary border border-earth-border">
             M
           </div>
           <div class="hidden sm:flex flex-col text-left">
@@ -120,26 +144,30 @@
     <!-- VIEW 1: HOME PAGE (Images 1 & 2) -->
     <!-- ======================================================================= -->
     <div id="view-home" class="space-y-8">
-      
+
       <!-- Hero Banner -->
-      <section class="bg-gradient-to-r from-[#F3E9DD] to-[#EFE1D1] rounded-3xl p-6 sm:p-10 border border-earth-border shadow-sm flex flex-col md:flex-row items-center justify-between gap-8">
+      <section
+        class="bg-gradient-to-r from-[#F3E9DD] to-[#EFE1D1] rounded-3xl p-6 sm:p-10 border border-earth-border shadow-sm flex flex-col md:flex-row items-center justify-between gap-8">
         <div class="max-w-xl space-y-4">
           <span class="inline-block px-3 py-1 bg-[#DCE8DA] text-[#385E38] rounded-full text-xs font-bold">
             🌱 ชุมชนนักอ่านและการแบ่งปันหนังสือยั่งยืน
           </span>
           <h1 class="text-3xl sm:text-4xl font-bold text-earth-primary leading-tight">
-            ส่งต่อเรื่องราวดีๆ <br/>
-            <span class="underline decoration-earth-accent">อ่านเพลินไม่ต้องซื้อขาด</span> <br/>
+            ส่งต่อเรื่องราวดีๆ <br />
+            <span class="underline decoration-earth-accent">อ่านเพลินไม่ต้องซื้อขาด</span> <br />
             หรือสร้างรายได้จากตู้หนังสือ
           </h1>
           <p class="text-earth-muted text-sm sm:text-base leading-relaxed">
-            เช่ายืมเริ่มต้นเพียง <b>฿5 /วัน</b> ดื่มด่ำวรรณกรรมชิ้นโปรดแบบสบายกระเป๋า พร้อมส่งฟรีถึงประตูบ้านเมื่อเช่าครบ 3 เล่มขึ้นไป
+            เช่ายืมเริ่มต้นเพียง <b>฿5 /วัน</b> ดื่มด่ำวรรณกรรมชิ้นโปรดแบบสบายกระเป๋า
+            พร้อมส่งฟรีถึงประตูบ้านเมื่อเช่าครบ 3 เล่มขึ้นไป
           </p>
           <div class="flex flex-wrap gap-3 pt-2">
-            <a href="#book-catalog" class="px-6 py-3 rounded-2xl bg-earth-primary text-white font-bold text-sm hover:bg-earth-primary-hover shadow-sm transition flex items-center gap-2">
+            <a href="#book-catalog"
+              class="px-6 py-3 rounded-2xl bg-earth-primary text-white font-bold text-sm hover:bg-earth-primary-hover shadow-sm transition flex items-center gap-2">
               <span class="material-symbols-outlined text-sm">menu_book</span> สำรวจหนังสือทั้งหมด
             </a>
-            <button onclick="showView('seller-add')" class="px-6 py-3 rounded-2xl bg-white text-earth-primary font-bold text-sm border border-earth-border hover:bg-earth-bg shadow-sm transition flex items-center gap-2">
+            <button onclick="showView('seller-add')"
+              class="px-6 py-3 rounded-2xl bg-white text-earth-primary font-bold text-sm border border-earth-border hover:bg-earth-bg shadow-sm transition flex items-center gap-2">
               <span class="material-symbols-outlined text-sm">storefront</span> เริ่มเปิดร้านให้เช่า/ขาย
             </button>
           </div>
@@ -163,18 +191,21 @@
         <!-- Hero Right Card -->
         <div class="w-full md:w-80 bg-white rounded-3xl p-4 border border-earth-border shadow-md">
           <div class="relative rounded-2xl overflow-hidden mb-3">
-            <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80" alt="Book Hero" class="w-full h-52 object-cover"/>
-            <span class="absolute top-2.5 left-2.5 bg-white/95 px-3 py-1 rounded-full text-xs font-bold text-earth-sage-dark shadow-sm">
+            <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80"
+              alt="Book Hero" class="w-full h-52 object-cover" />
+            <span
+              class="absolute top-2.5 left-2.5 bg-white/95 px-3 py-1 rounded-full text-xs font-bold text-earth-sage-dark shadow-sm">
               🚚 ส่งฟรีเมื่อยืม 3 เล่มขึ้นไป
             </span>
-            <span class="absolute bottom-2.5 right-2.5 bg-earth-accent text-white px-3 py-1 rounded-full text-xs font-bold shadow-sm">
+            <span
+              class="absolute bottom-2.5 right-2.5 bg-earth-accent text-white px-3 py-1 rounded-full text-xs font-bold shadow-sm">
               ประหยัด 85%
             </span>
           </div>
           <div class="bg-earth-bg p-3 rounded-2xl border border-earth-border flex items-center gap-3">
             <span class="material-symbols-outlined text-2xl text-earth-sage">recycling</span>
             <div class="text-xs leading-snug">
-              <b class="text-earth-primary">หมุนเวียนแล้ว 48,000+ ครั้ง</b><br/>
+              <b class="text-earth-primary">หมุนเวียนแล้ว 48,000+ ครั้ง</b><br />
               <span class="text-earth-muted">ลดการตัดต้นไม้กว่า 960 ต้น ในชุมชน</span>
             </div>
           </div>
@@ -203,7 +234,8 @@
           </div>
           <div class="text-xs text-earth-muted flex items-center gap-1">
             <span>เรียงตาม:</span>
-            <select id="sort-select" onchange="renderBooks()" class="bg-white border border-earth-border rounded-xl px-2 py-1 text-xs text-earth-primary font-medium focus:outline-none">
+            <select id="sort-select" onchange="renderBooks()"
+              class="bg-white border border-earth-border rounded-xl px-2 py-1 text-xs text-earth-primary font-medium focus:outline-none">
               <option value="default">ยอดนิยมสูงสุด</option>
               <option value="rent-low">ราคาเช่า: ต่ำ-สูง</option>
               <option value="buy-low">ราคาซื้อ: ต่ำ-สูง</option>
@@ -222,7 +254,8 @@
     <!-- ======================================================================= -->
     <div id="view-detail" class="hidden space-y-6">
       <div class="flex items-center justify-between">
-        <button onclick="showView('home')" class="px-4 py-2 rounded-xl bg-white border border-earth-border text-xs font-bold text-earth-primary hover:bg-earth-secondary/40 transition flex items-center gap-1.5 shadow-sm">
+        <button onclick="showView('home')"
+          class="px-4 py-2 rounded-xl bg-white border border-earth-border text-xs font-bold text-earth-primary hover:bg-earth-secondary/40 transition flex items-center gap-1.5 shadow-sm">
           <span class="material-symbols-outlined text-sm">arrow_back</span> กลับหน้าสำรวจ
         </button>
         <div class="text-xs text-earth-muted" id="detail-breadcrumb">
@@ -230,11 +263,13 @@
         </div>
       </div>
 
-      <div class="bg-white rounded-3xl p-6 sm:p-8 border border-earth-border shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div
+        class="bg-white rounded-3xl p-6 sm:p-8 border border-earth-border shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div class="lg:col-span-5 space-y-4">
           <div class="relative bg-earth-bg rounded-2xl p-4 border border-earth-border flex items-center justify-center">
-            <img id="detail-img" src="" alt="Book Cover" class="w-full max-h-96 object-contain rounded-xl shadow-sm"/>
-            <span id="detail-condition-badge" class="absolute top-4 left-4 px-3 py-1 bg-earth-sage text-white text-xs font-bold rounded-full shadow-sm">
+            <img id="detail-img" src="" alt="Book Cover" class="w-full max-h-96 object-contain rounded-xl shadow-sm" />
+            <span id="detail-condition-badge"
+              class="absolute top-4 left-4 px-3 py-1 bg-earth-sage text-white text-xs font-bold rounded-full shadow-sm">
               ● สภาพดีเยี่ยม 95%
             </span>
           </div>
@@ -248,7 +283,8 @@
                 <span class="text-[11px] text-earth-muted">(ส่งต่อแล้ว 142 เล่ม)</span>
               </div>
             </div>
-            <button class="px-3 py-1.5 bg-white border border-earth-border rounded-xl text-xs font-bold text-earth-primary shadow-sm hover:bg-earth-secondary/40">
+            <button
+              class="px-3 py-1.5 bg-white border border-earth-border rounded-xl text-xs font-bold text-earth-primary shadow-sm hover:bg-earth-secondary/40">
               ดูตู้หนังสือ
             </button>
           </div>
@@ -266,21 +302,29 @@
         <div class="lg:col-span-7 space-y-5">
           <div>
             <div class="flex items-center gap-2 mb-2">
-              <span id="detail-cat-badge" class="px-2.5 py-0.5 rounded-full bg-earth-bg text-earth-primary border border-earth-border text-xs font-semibold">พัฒนาตนเอง / จิตวิทยา</span>
-              <span class="px-2.5 py-0.5 rounded-full bg-earth-sage-light text-earth-sage-dark text-xs font-semibold">พร้อมเช่า &amp; ซื้อ</span>
+              <span id="detail-cat-badge"
+                class="px-2.5 py-0.5 rounded-full bg-earth-bg text-earth-primary border border-earth-border text-xs font-semibold">พัฒนาตนเอง
+                / จิตวิทยา</span>
+              <span
+                class="px-2.5 py-0.5 rounded-full bg-earth-sage-light text-earth-sage-dark text-xs font-semibold">พร้อมเช่า
+                &amp; ซื้อ</span>
               <span class="text-xs text-earth-muted ml-auto" id="detail-isbn">ISBN: 978-616-287-343-0</span>
             </div>
-            <h1 class="text-2xl sm:text-3xl font-bold text-earth-primary leading-tight" id="detail-title">Atomic Habits</h1>
+            <h1 class="text-2xl sm:text-3xl font-bold text-earth-primary leading-tight" id="detail-title">Atomic Habits
+            </h1>
             <p class="text-xs text-earth-muted mt-1" id="detail-author">James Clear</p>
           </div>
 
-          <p class="text-xs sm:text-sm text-earth-primary bg-earth-bg/70 p-3.5 rounded-2xl border border-earth-border leading-relaxed" id="detail-desc"></p>
+          <p class="text-xs sm:text-sm text-earth-primary bg-earth-bg/70 p-3.5 rounded-2xl border border-earth-border leading-relaxed"
+            id="detail-desc"></p>
 
           <div class="space-y-3">
             <b class="text-sm text-earth-primary block">เลือกรูปแบบที่ต้องการ:</b>
-            <div id="option-rent-card" onclick="selectDetailMode('rent')" class="cursor-pointer border-2 border-earth-sage bg-earth-sage-light/20 p-4 rounded-2xl transition flex justify-between items-center">
+            <div id="option-rent-card" onclick="selectDetailMode('rent')"
+              class="cursor-pointer border-2 border-earth-sage bg-earth-sage-light/20 p-4 rounded-2xl transition flex justify-between items-center">
               <div class="flex items-center gap-3">
-                <input type="radio" name="detail_order_mode" id="radio-rent" checked class="accent-earth-sage w-4 h-4"/>
+                <input type="radio" name="detail_order_mode" id="radio-rent" checked
+                  class="accent-earth-sage w-4 h-4" />
                 <div>
                   <div class="flex items-center gap-2">
                     <b class="text-sm text-earth-primary">ยืมอ่านประหยัด</b>
@@ -292,13 +336,15 @@
               <div class="text-right"><b class="text-base text-earth-primary" id="detail-rent-rate">฿7 /วัน</b></div>
             </div>
 
-            <div id="option-buy-card" onclick="selectDetailMode('buy')" class="cursor-pointer border border-earth-border bg-white p-4 rounded-2xl transition flex justify-between items-center hover:border-earth-accent">
+            <div id="option-buy-card" onclick="selectDetailMode('buy')"
+              class="cursor-pointer border border-earth-border bg-white p-4 rounded-2xl transition flex justify-between items-center hover:border-earth-accent">
               <div class="flex items-center gap-3">
-                <input type="radio" name="detail_order_mode" id="radio-buy" class="accent-earth-accent w-4 h-4"/>
+                <input type="radio" name="detail_order_mode" id="radio-buy" class="accent-earth-accent w-4 h-4" />
                 <div>
                   <div class="flex items-center gap-2">
                     <b class="text-sm text-earth-primary">ซื้อขาดมือสอง</b>
-                    <span class="bg-earth-accent text-white text-[10px] px-2 py-0.5 rounded-full font-bold" id="detail-buy-discount">ประหยัด ฿50</span>
+                    <span class="bg-earth-accent text-white text-[10px] px-2 py-0.5 rounded-full font-bold"
+                      id="detail-buy-discount">ประหยัด ฿50</span>
                   </div>
                   <span class="text-xs text-earth-muted block mt-0.5">สภาพสะสม เป็นเจ้าของทันที ไม่ต้องส่งคืน</span>
                 </div>
@@ -322,26 +368,38 @@
 
             <div class="flex items-center gap-2 text-xs">
               <span class="text-earth-muted">เลือกด่วน:</span>
-              <button onclick="setRentalDays(7)" class="chip-day px-3 py-1 rounded-full bg-white border border-earth-border text-earth-primary font-medium hover:bg-earth-sage-light transition">7 วัน</button>
-              <button onclick="setRentalDays(10)" class="chip-day px-3 py-1 rounded-full bg-earth-primary text-white font-medium hover:bg-earth-primary-hover transition">10 วัน (แนะนำ)</button>
-              <button onclick="setRentalDays(14)" class="chip-day px-3 py-1 rounded-full bg-white border border-earth-border text-earth-primary font-medium hover:bg-earth-sage-light transition">14 วัน</button>
-              <button onclick="setRentalDays(21)" class="chip-day px-3 py-1 rounded-full bg-white border border-earth-border text-earth-primary font-medium hover:bg-earth-sage-light transition">21 วัน</button>
+              <button onclick="setRentalDays(7)"
+                class="chip-day px-3 py-1 rounded-full bg-white border border-earth-border text-earth-primary font-medium hover:bg-earth-sage-light transition">7
+                วัน</button>
+              <button onclick="setRentalDays(10)"
+                class="chip-day px-3 py-1 rounded-full bg-earth-primary text-white font-medium hover:bg-earth-primary-hover transition">10
+                วัน (แนะนำ)</button>
+              <button onclick="setRentalDays(14)"
+                class="chip-day px-3 py-1 rounded-full bg-white border border-earth-border text-earth-primary font-medium hover:bg-earth-sage-light transition">14
+                วัน</button>
+              <button onclick="setRentalDays(21)"
+                class="chip-day px-3 py-1 rounded-full bg-white border border-earth-border text-earth-primary font-medium hover:bg-earth-sage-light transition">21
+                วัน</button>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               <div>
                 <label class="block text-earth-muted mb-1">วันเริ่มยืม (Start Date)</label>
-                <input type="date" id="input-start-date" onchange="updateRentalCalc()" class="w-full p-2.5 rounded-xl bg-white border border-earth-border focus:ring-1 focus:ring-earth-sage focus:outline-none"/>
+                <input type="date" id="input-start-date" onchange="updateRentalCalc()"
+                  class="w-full p-2.5 rounded-xl bg-white border border-earth-border focus:ring-1 focus:ring-earth-sage focus:outline-none" />
               </div>
               <div>
                 <label class="block text-earth-muted mb-1">วันกำหนดคืน (Return Date)</label>
-                <input type="date" id="input-return-date" onchange="updateRentalCalc()" class="w-full p-2.5 rounded-xl bg-white border border-earth-border focus:ring-1 focus:ring-earth-sage focus:outline-none"/>
+                <input type="date" id="input-return-date" onchange="updateRentalCalc()"
+                  class="w-full p-2.5 rounded-xl bg-white border border-earth-border focus:ring-1 focus:ring-earth-sage focus:outline-none" />
               </div>
             </div>
 
-            <div class="bg-earth-bg p-3.5 rounded-xl border border-earth-border flex items-center justify-between text-xs sm:text-sm">
+            <div
+              class="bg-earth-bg p-3.5 rounded-xl border border-earth-border flex items-center justify-between text-xs sm:text-sm">
               <div>
-                <b class="text-earth-primary block" id="calc-days-line">10 วัน × ฿7/วัน = <span class="text-earth-accent font-bold">฿70</span></b>
+                <b class="text-earth-primary block" id="calc-days-line">10 วัน × ฿7/วัน = <span
+                    class="text-earth-accent font-bold">฿70</span></b>
                 <span class="text-xs text-earth-muted" id="calc-deposit-line">+ ค่ามัดจำหนังสือ</span>
               </div>
               <div class="text-right">
@@ -352,11 +410,14 @@
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-            <button onclick="handleAddToCartFromDetail()" class="py-3.5 rounded-2xl bg-white border border-earth-border text-earth-primary font-bold text-sm hover:bg-earth-bg shadow-sm transition flex items-center justify-center gap-2">
+            <button onclick="handleAddToCartFromDetail()"
+              class="py-3.5 rounded-2xl bg-white border border-earth-border text-earth-primary font-bold text-sm hover:bg-earth-bg shadow-sm transition flex items-center justify-center gap-2">
               <span class="material-symbols-outlined text-lg">shopping_cart</span> เพิ่มลงตะกร้า
             </button>
-            <button onclick="handleInstantActionFromDetail()" id="btn-detail-instant" class="py-3.5 rounded-2xl bg-earth-primary text-white font-bold text-sm hover:bg-earth-primary-hover shadow-md transition flex items-center justify-center gap-2">
-              <span class="material-symbols-outlined text-lg">auto_stories</span> <span id="label-detail-instant">ยืมทันที</span>
+            <button onclick="handleInstantActionFromDetail()" id="btn-detail-instant"
+              class="py-3.5 rounded-2xl bg-earth-primary text-white font-bold text-sm hover:bg-earth-primary-hover shadow-md transition flex items-center justify-center gap-2">
+              <span class="material-symbols-outlined text-lg">auto_stories</span> <span
+                id="label-detail-instant">ยืมทันที</span>
             </button>
           </div>
         </div>
@@ -372,9 +433,11 @@
           <h2 class="text-2xl sm:text-3xl font-bold text-earth-primary flex items-center gap-2">
             <span class="material-symbols-outlined text-earth-accent text-3xl">shopping_bag</span> ตะกร้าของคุณ
           </h2>
-          <p class="text-xs text-earth-muted mt-1">แยกสัดส่วนการชำระเงินระหว่าง หนังสือเช่ายืม และ หนังสือสั่งซื้อขาด</p>
+          <p class="text-xs text-earth-muted mt-1">แยกสัดส่วนการชำระเงินระหว่าง หนังสือเช่ายืม และ หนังสือสั่งซื้อขาด
+          </p>
         </div>
-        <span class="bg-earth-secondary text-earth-primary font-bold text-xs px-3.5 py-1.5 rounded-full" id="cart-total-badge">3 รายการในตะกร้า</span>
+        <span class="bg-earth-secondary text-earth-primary font-bold text-xs px-3.5 py-1.5 rounded-full"
+          id="cart-total-badge">3 รายการในตะกร้า</span>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -389,12 +452,15 @@
                   <p class="text-xs text-earth-muted">ยืมอ่านตามกำหนด คืนสะดวก พร้อมรับมัดจำคืน</p>
                 </div>
               </div>
-              <span class="bg-earth-sage-light text-earth-sage-dark text-xs font-bold px-3 py-1 rounded-full" id="section-a-count">2 เล่ม</span>
+              <span class="bg-earth-sage-light text-earth-sage-dark text-xs font-bold px-3 py-1 rounded-full"
+                id="section-a-count">2 เล่ม</span>
             </div>
             <div class="space-y-3" id="cart-rent-list"></div>
-            <div class="pt-3 border-t border-earth-border flex items-center justify-between text-xs sm:text-sm font-bold text-earth-primary">
+            <div
+              class="pt-3 border-t border-earth-border flex items-center justify-between text-xs sm:text-sm font-bold text-earth-primary">
               <span>รวมค่าเช่ายืมหมวด A:</span>
-              <span><span class="text-earth-sage-dark text-base" id="subtotal-rent">฿112</span> <span class="text-xs text-earth-muted font-normal" id="deposit-subtotal-text">(มัดจำสะสม ฿270)</span></span>
+              <span><span class="text-earth-sage-dark text-base" id="subtotal-rent">฿112</span> <span
+                  class="text-xs text-earth-muted font-normal" id="deposit-subtotal-text">(มัดจำสะสม ฿270)</span></span>
             </div>
           </div>
 
@@ -408,10 +474,12 @@
                   <p class="text-xs text-earth-muted">หนังสือมือสองคัดเกรด เป็นเจ้าของถาวร ไม่ต้องส่งคืน</p>
                 </div>
               </div>
-              <span class="bg-earth-accent/20 text-earth-accent-hover text-xs font-bold px-3 py-1 rounded-full" id="section-b-count">1 เล่ม</span>
+              <span class="bg-earth-accent/20 text-earth-accent-hover text-xs font-bold px-3 py-1 rounded-full"
+                id="section-b-count">1 เล่ม</span>
             </div>
             <div class="space-y-3" id="cart-buy-list"></div>
-            <div class="pt-3 border-t border-earth-border flex items-center justify-between text-xs sm:text-sm font-bold text-earth-primary">
+            <div
+              class="pt-3 border-t border-earth-border flex items-center justify-between text-xs sm:text-sm font-bold text-earth-primary">
               <span>รวมค่าซื้อขาดหมวด B:</span>
               <span class="text-earth-accent text-base" id="subtotal-buy">฿230</span>
             </div>
@@ -426,35 +494,49 @@
               <span class="material-symbols-outlined text-earth-muted text-xl">receipt_long</span>
             </div>
             <div class="space-y-2.5 text-xs sm:text-sm text-earth-muted">
-              <div class="flex justify-between"><span>ค่าเช่ายืมรวม (<span id="sum-rent-books">2</span> เล่ม)</span><b class="text-earth-primary" id="sum-rent-val">฿112</b></div>
-              <div class="flex justify-between"><span>ค่าซื้อขาดรวม (<span id="sum-buy-books">1</span> เล่ม)</span><b class="text-earth-primary" id="sum-buy-val">฿230</b></div>
-              <div class="flex justify-between"><span>ค่ามัดจำรวม</span><b class="text-earth-primary" id="sum-deposit-val">฿270</b></div>
-              <div class="flex justify-between"><span>ค่าบริการจัดส่งพัสดุ</span><b class="text-earth-primary" id="sum-shipping-val">฿45</b></div>
-              <div class="flex justify-between text-earth-sage-dark font-medium"><span>โค้ดส่วนลดนักอ่านใหม่ (WELCOMEREAD)</span><b id="sum-discount-val">-฿30</b></div>
+              <div class="flex justify-between"><span>ค่าเช่ายืมรวม (<span id="sum-rent-books">2</span> เล่ม)</span><b
+                  class="text-earth-primary" id="sum-rent-val">฿112</b></div>
+              <div class="flex justify-between"><span>ค่าซื้อขาดรวม (<span id="sum-buy-books">1</span> เล่ม)</span><b
+                  class="text-earth-primary" id="sum-buy-val">฿230</b></div>
+              <div class="flex justify-between"><span>ค่ามัดจำรวม</span><b class="text-earth-primary"
+                  id="sum-deposit-val">฿270</b></div>
+              <div class="flex justify-between"><span>ค่าบริการจัดส่งพัสดุ</span><b class="text-earth-primary"
+                  id="sum-shipping-val">฿45</b></div>
+              <div class="flex justify-between text-earth-sage-dark font-medium"><span>โค้ดส่วนลดนักอ่านใหม่
+                  (WELCOMEREAD)</span><b id="sum-discount-val">-฿30</b></div>
             </div>
             <div class="border-t border-earth-border pt-4">
               <div class="flex justify-between items-baseline mb-1">
                 <span class="font-bold text-earth-primary text-base">ยอดชำระทั้งหมด</span>
                 <span class="font-bold text-earth-primary text-3xl" id="sum-grand-total">฿627</span>
               </div>
-              <p class="text-[11px] text-earth-muted" id="note-deposit-refund">* ยอดนี้รวมเงินมัดจำที่จะได้รับคืน ฿270 เมื่อส่งคืนหนังสือครบ</p>
+              <p class="text-[11px] text-earth-muted" id="note-deposit-refund">* ยอดนี้รวมเงินมัดจำที่จะได้รับคืน ฿270
+                เมื่อส่งคืนหนังสือครบ</p>
             </div>
 
             <!-- Mandatory Auth & Address -->
             <div class="bg-earth-bg rounded-2xl p-4 border border-earth-border space-y-3">
               <div class="flex items-center justify-between">
-                <b class="text-xs text-earth-primary flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">lock</span> 1. สถานะบัญชีผู้ใช้ *(บังคับ)</b>
-                <span class="text-[11px] font-bold text-earth-sage-dark bg-earth-sage-light px-2.5 py-0.5 rounded-full">✓ เข้าสู่ระบบแล้ว</span>
+                <b class="text-xs text-earth-primary flex items-center gap-1.5"><span
+                    class="material-symbols-outlined text-sm">lock</span> 1. สถานะบัญชีผู้ใช้ *(บังคับ)</b>
+                <span
+                  class="text-[11px] font-bold text-earth-sage-dark bg-earth-sage-light px-2.5 py-0.5 rounded-full">✓
+                  เข้าสู่ระบบแล้ว</span>
               </div>
-              <div class="text-xs text-earth-muted">คุณกำลังสั่งซื้อในนาม: <b class="text-earth-primary" id="auth-user-name">คุณมีนา</b> (<span id="auth-user-phone">081-234-5678</span>)</div>
+              <div class="text-xs text-earth-muted">คุณกำลังสั่งซื้อในนาม: <b class="text-earth-primary"
+                  id="auth-user-name">คุณมีนา</b> (<span id="auth-user-phone">081-234-5678</span>)</div>
             </div>
 
             <div class="bg-earth-bg rounded-2xl p-4 border border-earth-border space-y-3">
-              <b class="text-xs text-earth-primary flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">local_shipping</span> 2. ที่อยู่จัดส่งพัสดุ *(ข้อมูลบังคับ)</b>
-              <textarea id="checkout-address-input" oninput="validateCheckoutForm()" rows="3" class="w-full p-2.5 rounded-xl bg-white border border-earth-border text-xs focus:ring-1 focus:ring-earth-primary focus:outline-none">123/45 ถนนมิตรภาพ แขวงคลองเตย เขตคลองเตย กรุงเทพมหานคร 10110</textarea>
+              <b class="text-xs text-earth-primary flex items-center gap-1.5"><span
+                  class="material-symbols-outlined text-sm">local_shipping</span> 2. ที่อยู่จัดส่งพัสดุ
+                *(ข้อมูลบังคับ)</b>
+              <textarea id="checkout-address-input" oninput="validateCheckoutForm()" rows="3"
+                class="w-full p-2.5 rounded-xl bg-white border border-earth-border text-xs focus:ring-1 focus:ring-earth-primary focus:outline-none">123/45 ถนนมิตรภาพ แขวงคลองเตย เขตคลองเตย กรุงเทพมหานคร 10110</textarea>
             </div>
 
-            <button id="btn-checkout" onclick="performUnifiedCheckout()" class="w-full py-4 rounded-2xl bg-earth-primary text-white font-bold text-base hover:bg-earth-primary-hover shadow-md transition flex items-center justify-center gap-2">
+            <button id="btn-checkout" onclick="performUnifiedCheckout()"
+              class="w-full py-4 rounded-2xl bg-earth-primary text-white font-bold text-base hover:bg-earth-primary-hover shadow-md transition flex items-center justify-center gap-2">
               ดำเนินการชำระเงิน (Checkout) <span class="material-symbols-outlined text-lg">arrow_forward</span>
             </button>
             <div class="bg-[#FAFDFC] border border-earth-sage/30 rounded-2xl p-3 text-xs text-earth-sage-dark">
@@ -469,49 +551,80 @@
     <!-- VIEW 4: SELLER CENTER - ADD NEW BOOK (Image 1) -->
     <!-- ======================================================================= -->
     <div id="view-seller-add" class="hidden space-y-6">
-      
+
       <!-- Header -->
       <div class="flex items-center justify-between pb-2 border-b border-earth-border">
         <div class="flex items-center gap-3">
-          <div class="w-11 h-11 bg-earth-primary text-white rounded-2xl flex items-center justify-center text-2xl shadow-sm">
+          <div
+            class="w-11 h-11 bg-earth-primary text-white rounded-2xl flex items-center justify-center text-2xl shadow-sm">
             📄
           </div>
           <div>
-            <h2 class="text-xl sm:text-2xl font-bold text-earth-primary">ลงทะเบียนหนังสือใหม่เข้าสู่ระบบ (Add New Book)</h2>
-            <p class="text-xs text-earth-muted">กรอกข้อมูลให้ครบถ้วนเพื่อเพิ่มโอกาสให้นักอ่านค้นพบหนังสือและไว้วางใจในการเช่าหรือซื้อ</p>
+            <h2 class="text-xl sm:text-2xl font-bold text-earth-primary">ลงทะเบียนหนังสือใหม่เข้าสู่ระบบ (Add New Book)
+            </h2>
+            <p class="text-xs text-earth-muted">
+              กรอกข้อมูลให้ครบถ้วนเพื่อเพิ่มโอกาสให้นักอ่านค้นพบหนังสือและไว้วางใจในการเช่าหรือซื้อ</p>
           </div>
         </div>
-        <span class="hidden sm:inline-block bg-earth-sage-light text-earth-sage-dark border border-earth-sage/30 px-3.5 py-1.5 rounded-full text-xs font-semibold">
+        <span
+          class="hidden sm:inline-block bg-earth-sage-light text-earth-sage-dark border border-earth-sage/30 px-3.5 py-1.5 rounded-full text-xs font-semibold">
           🛡️ มีระบบคุ้มครองประกันมัดจำ BookShare
         </span>
       </div>
 
       <!-- Main Form 2 Columns -->
-      <div class="bg-white rounded-3xl p-6 sm:p-8 border border-earth-border shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
+      <div
+        class="bg-white rounded-3xl p-6 sm:p-8 border border-earth-border shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8">
+
         <!-- Left: Photo Upload & Condition -->
         <div class="lg:col-span-5 space-y-4">
-          <b class="text-xs text-earth-primary block">รูปถ่ายปกและสภาพหนังสือ * <span class="text-earth-muted font-normal">(อย่างน้อย 2 ภาพ)</span></b>
-          
+          <b class="text-xs text-earth-primary block">รูปถ่ายปกและสภาพหนังสือ * <span
+              class="text-earth-muted font-normal">(อย่างน้อย 2 ภาพ)</span></b>
+
           <!-- Dropzone -->
-          <div class="border-2 border-dashed border-[#D5C5B5] bg-earth-bg rounded-2xl p-6 text-center space-y-2 cursor-pointer hover:bg-earth-secondary/20 transition">
+          <div
+            class="border-2 border-dashed border-[#D5C5B5] bg-earth-bg rounded-2xl p-6 text-center space-y-2 cursor-pointer hover:bg-earth-secondary/20 transition">
             <span class="material-symbols-outlined text-4xl text-earth-muted">add_photo_alternate</span>
             <b class="text-xs text-earth-primary block">คลิกเพื่ออัปโหลด หรือลากวางไฟล์ที่นี่</b>
             <p class="text-[11px] text-earth-muted">แนะนำ: ถ่ายปกหน้า, ปกหลัง, สันหนังสือ และรอยขีดเขียน (ถ้ามี)</p>
             <span class="text-[10px] text-earth-muted/80 block">รองรับ JPG, PNG, WEBP • ไม่เกิน 10MB/รูป</span>
           </div>
+          <input type="file" id="add-b-images" accept="image/jpeg,image/png,image/webp" multiple class="hidden"
+            onchange="previewUploadedImages(event)" />
+
+          <label for="add-b-images"
+            class="block border-2 border-dashed border-[#D5C5B5] bg-earth-bg rounded-2xl p-6 text-center cursor-pointer">
+            <span class="material-symbols-outlined text-4xl text-earth-muted">
+              add_photo_alternate
+            </span>
+
+            <b class="text-xs text-earth-primary block">
+              คลิกเพื่ออัปโหลดรูปภาพ
+            </b>
+
+            <p class="text-[11px] text-earth-muted">
+              รองรับ JPG, PNG, WEBP
+            </p>
+          </label>
+
+          <div id="uploaded-image-preview" class="grid grid-cols-3 gap-3 mt-3"></div>
 
           <!-- Preview Row -->
           <div class="grid grid-cols-3 gap-3">
             <div class="relative rounded-xl overflow-hidden border border-earth-border aspect-[3/4] bg-earth-bg">
-              <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=300&q=80" class="w-full h-full object-cover"/>
-              <span class="absolute top-1.5 left-1.5 bg-earth-primary/90 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">รูปปกหลัก</span>
+              <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=300&q=80"
+                class="w-full h-full object-cover" />
+              <span
+                class="absolute top-1.5 left-1.5 bg-earth-primary/90 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">รูปปกหลัก</span>
             </div>
             <div class="relative rounded-xl overflow-hidden border border-earth-border aspect-[3/4] bg-earth-bg">
-              <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=300&q=80" class="w-full h-full object-cover"/>
-              <span class="absolute top-1.5 left-1.5 bg-earth-primary/90 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">สันกระดาษ</span>
+              <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=300&q=80"
+                class="w-full h-full object-cover" />
+              <span
+                class="absolute top-1.5 left-1.5 bg-earth-primary/90 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">สันกระดาษ</span>
             </div>
-            <div class="border-2 border-dashed border-[#D5C5B5] rounded-xl flex flex-col items-center justify-center text-earth-muted bg-earth-bg aspect-[3/4] cursor-pointer hover:bg-earth-secondary/30 transition">
+            <div
+              class="border-2 border-dashed border-[#D5C5B5] rounded-xl flex flex-col items-center justify-center text-earth-muted bg-earth-bg aspect-[3/4] cursor-pointer hover:bg-earth-secondary/30 transition">
               <span class="text-2xl font-bold">+</span>
               <span class="text-[11px]">เพิ่มรูป</span>
             </div>
@@ -521,9 +634,11 @@
           <div class="pt-2 space-y-2">
             <div class="flex justify-between items-center">
               <b class="text-xs text-earth-primary">ประเมินสภาพหนังสือ (Condition) *</b>
-              <span class="bg-earth-sage-light text-earth-sage-dark text-[11px] font-bold px-2.5 py-0.5 rounded-md" id="add-condition-badge">95% ดีเยี่ยม (เหมือนใหม่)</span>
+              <span class="bg-earth-sage-light text-earth-sage-dark text-[11px] font-bold px-2.5 py-0.5 rounded-md"
+                id="add-condition-badge">95% ดีเยี่ยม (เหมือนใหม่)</span>
             </div>
-            <input type="range" min="70" max="100" value="95" step="5" oninput="updateConditionPreview(this.value)" class="w-full accent-earth-primary cursor-pointer"/>
+            <input type="range" min="70" max="100" value="95" step="5" oninput="updateConditionPreview(this.value)"
+              class="w-full accent-earth-primary cursor-pointer" />
             <div class="flex justify-between text-[10px] text-earth-muted">
               <span>70% เก่าเก็บ/มีรอย</span>
               <span>85% ปานกลาง</span>
@@ -532,7 +647,8 @@
             </div>
             <div class="pt-2">
               <label class="block text-[11px] text-earth-muted mb-1">หมายเหตุสภาพเพิ่มเติม:</label>
-              <textarea rows="2" placeholder="เช่น ห่อปกพลาสติกแล้ว ไม่มีรอยไฮไลท์ สันกระดาษสะอาด ไม่มีหน้าพับ..." class="w-full p-2.5 rounded-xl bg-earth-bg border border-earth-border text-xs focus:outline-none focus:ring-1 focus:ring-earth-primary"></textarea>
+              <textarea rows="2" placeholder="เช่น ห่อปกพลาสติกแล้ว ไม่มีรอยไฮไลท์ สันกระดาษสะอาด ไม่มีหน้าพับ..."
+                class="w-full p-2.5 rounded-xl bg-earth-bg border border-earth-border text-xs focus:outline-none focus:ring-1 focus:ring-earth-primary"></textarea>
             </div>
           </div>
         </div>
@@ -541,31 +657,39 @@
         <div class="lg:col-span-7 space-y-4">
           <div>
             <label class="block text-xs font-bold text-earth-primary mb-1">ชื่อหนังสือ (Book Title) *</label>
-            <input type="text" id="add-b-title" value="สุขุม ละเมียด ละไม (Wabi Sabi Guide)" class="w-full p-2.5 rounded-xl bg-earth-bg border border-earth-border text-xs focus:outline-none focus:ring-1 focus:ring-earth-primary" required/>
+            <input type="text" id="add-b-title" value="สุขุม ละเมียด ละไม (Wabi Sabi Guide)"
+              class="w-full p-2.5 rounded-xl bg-earth-bg border border-earth-border text-xs focus:outline-none focus:ring-1 focus:ring-earth-primary"
+              required />
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label class="block text-xs font-bold text-earth-primary mb-1">ผู้แต่ง (Author) *</label>
-              <input type="text" id="add-b-author" value="Beth Kempton" class="w-full p-2.5 rounded-xl bg-earth-bg border border-earth-border text-xs focus:outline-none focus:ring-1 focus:ring-earth-primary" required/>
+              <input type="text" id="add-b-author" value="Beth Kempton"
+                class="w-full p-2.5 rounded-xl bg-earth-bg border border-earth-border text-xs focus:outline-none focus:ring-1 focus:ring-earth-primary"
+                required />
             </div>
             <div>
               <div class="flex justify-between items-center mb-1">
                 <label class="text-xs font-bold text-earth-primary">เลข ISBN (13 หลัก)</label>
-                <span class="text-[10px] text-earth-accent bg-earth-accent/10 px-2 py-0.5 rounded cursor-pointer">ดึงข้อมูลอัตโนมัติ</span>
+                <span
+                  class="text-[10px] text-earth-accent bg-earth-accent/10 px-2 py-0.5 rounded cursor-pointer">ดึงข้อมูลอัตโนมัติ</span>
               </div>
-              <input type="text" id="add-b-isbn" value="978-616-04-4521-9" class="w-full p-2.5 rounded-xl bg-earth-bg border border-earth-border text-xs focus:outline-none focus:ring-1 focus:ring-earth-primary"/>
+              <input type="text" id="add-b-isbn" value="978-616-04-4521-9"
+                class="w-full p-2.5 rounded-xl bg-earth-bg border border-earth-border text-xs focus:outline-none focus:ring-1 focus:ring-earth-primary" />
             </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label class="block text-xs font-bold text-earth-primary mb-1">สำนักพิมพ์ (Publisher)</label>
-              <input type="text" value="BookMaker Publishing" class="w-full p-2.5 rounded-xl bg-earth-bg border border-earth-border text-xs focus:outline-none focus:ring-1 focus:ring-earth-primary"/>
+              <input type="text" value="BookMaker Publishing"
+                class="w-full p-2.5 rounded-xl bg-earth-bg border border-earth-border text-xs focus:outline-none focus:ring-1 focus:ring-earth-primary" />
             </div>
             <div>
               <label class="block text-xs font-bold text-earth-primary mb-1">หมวดหมู่หนังสือ *</label>
-              <select id="add-b-cat" class="w-full p-2.5 rounded-xl bg-earth-bg border border-earth-border text-xs focus:outline-none focus:ring-1 focus:ring-earth-primary">
+              <select id="add-b-cat"
+                class="w-full p-2.5 rounded-xl bg-earth-bg border border-earth-border text-xs focus:outline-none focus:ring-1 focus:ring-earth-primary">
                 <option>พัฒนาตนเอง / จิตวิทยา</option>
                 <option>วรรณกรรม &amp; นิยายแปล</option>
                 <option>ธุรกิจ &amp; การลงทุน</option>
@@ -578,18 +702,22 @@
           <div>
             <label class="block text-xs font-bold text-earth-primary mb-2">ประเภทการลงรายการ (Listing Option) *</label>
             <div class="grid grid-cols-3 gap-2 text-xs">
-              <label class="border border-earth-border rounded-xl p-3 text-center cursor-pointer hover:border-earth-primary bg-white flex flex-col items-center justify-between">
-                <input type="radio" name="listing_type" value="ให้เช่าอย่างเดียว" class="accent-earth-primary mb-1"/>
+              <label
+                class="border border-earth-border rounded-xl p-3 text-center cursor-pointer hover:border-earth-primary bg-white flex flex-col items-center justify-between">
+                <input type="radio" name="listing_type" value="ให้เช่าอย่างเดียว" class="accent-earth-primary mb-1" />
                 <b class="text-earth-primary block">ให้เช่าอย่างเดียว</b>
                 <span class="text-[10px] text-earth-muted block mt-1">รับรายได้เรื่อยๆ โดยคงความเป็นเจ้าของ</span>
               </label>
-              <label class="border border-earth-border rounded-xl p-3 text-center cursor-pointer hover:border-earth-primary bg-white flex flex-col items-center justify-between">
-                <input type="radio" name="listing_type" value="ขายอย่างเดียว" class="accent-earth-primary mb-1"/>
+              <label
+                class="border border-earth-border rounded-xl p-3 text-center cursor-pointer hover:border-earth-primary bg-white flex flex-col items-center justify-between">
+                <input type="radio" name="listing_type" value="ขายอย่างเดียว" class="accent-earth-primary mb-1" />
                 <b class="text-earth-primary block">ขายอย่างเดียว</b>
                 <span class="text-[10px] text-earth-muted block mt-1">ส่งต่อเป็นเงินก้อน สิทธิ์ขาดแก่ผู้ซื้อ</span>
               </label>
-              <label class="border-2 border-earth-primary rounded-xl p-3 text-center cursor-pointer bg-earth-secondary/20 flex flex-col items-center justify-between">
-                <input type="radio" name="listing_type" value="ได้ทั้งเช่าและขาย ★" checked class="accent-earth-primary mb-1"/>
+              <label
+                class="border-2 border-earth-primary rounded-xl p-3 text-center cursor-pointer bg-earth-secondary/20 flex flex-col items-center justify-between">
+                <input type="radio" name="listing_type" value="ได้ทั้งเช่าและขาย ★" checked
+                  class="accent-earth-primary mb-1" />
                 <b class="text-earth-primary block">ได้ทั้งเช่าและขาย ★</b>
                 <span class="text-[10px] text-earth-muted block mt-1">โอกาสสร้างรายได้สูงสุด ลูกค้าเลือกได้</span>
               </label>
@@ -604,17 +732,20 @@
             <div class="grid grid-cols-3 gap-3 text-xs pt-1">
               <div>
                 <label class="block text-earth-muted mb-1 font-medium">ราคาขายส่งต่อ (฿)</label>
-                <input type="number" id="add-b-sale" value="240" class="w-full p-2 rounded-xl bg-white border border-earth-border text-xs font-bold"/>
+                <input type="number" id="add-b-sale" value="240"
+                  class="w-full p-2 rounded-xl bg-white border border-earth-border text-xs font-bold" />
                 <span class="text-[10px] text-earth-muted block mt-1">เทียบราคาปก ฿320 (ลด 25%)</span>
               </div>
               <div>
                 <label class="block text-earth-muted mb-1 font-medium">ค่าเช่าต่อวัน (฿/วัน)</label>
-                <input type="number" id="add-b-rent" value="6" class="w-full p-2 rounded-xl bg-white border border-earth-border text-xs font-bold"/>
+                <input type="number" id="add-b-rent" value="6"
+                  class="w-full p-2 rounded-xl bg-white border border-earth-border text-xs font-bold" />
                 <span class="text-[10px] text-earth-muted block mt-1">หรือ ฿35 / สัปดาห์</span>
               </div>
               <div>
                 <label class="block text-earth-muted mb-1 font-medium">ค่ามัดจำประกันหนังสือ (฿)</label>
-                <input type="number" id="add-b-deposit" value="150" class="w-full p-2 rounded-xl bg-white border border-earth-border text-xs font-bold"/>
+                <input type="number" id="add-b-deposit" value="150"
+                  class="w-full p-2 rounded-xl bg-white border border-earth-border text-xs font-bold" />
                 <span class="text-[10px] text-earth-muted block mt-1">คืนผู้เช่าเมื่อตรวจรับเล่ม</span>
               </div>
             </div>
@@ -622,10 +753,12 @@
 
           <!-- Actions -->
           <div class="flex items-center justify-between pt-2">
-            <button onclick="showView('seller-shelf')" class="text-xs text-earth-muted hover:text-earth-primary font-bold">
+            <button onclick="showView('seller-shelf')"
+              class="text-xs text-earth-muted hover:text-earth-primary font-bold">
               ดูตู้หนังสือของฉัน
             </button>
-            <button onclick="handleSaveNewBook()" class="px-6 py-3.5 rounded-2xl bg-earth-primary text-white font-bold text-sm hover:bg-earth-primary-hover shadow-md transition flex items-center gap-2">
+            <button onclick="handleSaveNewBook()"
+              class="px-6 py-3.5 rounded-2xl bg-earth-primary text-white font-bold text-sm hover:bg-earth-primary-hover shadow-md transition flex items-center gap-2">
               <span class="material-symbols-outlined text-lg">save</span> บันทึกและขึ้นแสดงบนระบบทันที
             </button>
           </div>
@@ -640,11 +773,13 @@
     <!-- VIEW 5: SELLER'S SHELF & INVENTORY TABLE (Image 2) -->
     <!-- ======================================================================= -->
     <div id="view-seller-shelf" class="hidden space-y-6">
-      
+
       <!-- Store Header Banner -->
-      <div class="bg-white rounded-3xl p-6 border border-earth-border shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div
+        class="bg-white rounded-3xl p-6 border border-earth-border shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
         <div class="flex items-center gap-4">
-          <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=120&q=80" class="w-16 h-16 rounded-2xl object-cover border border-earth-border"/>
+          <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=120&q=80"
+            class="w-16 h-16 rounded-2xl object-cover border border-earth-border" />
           <div>
             <div class="flex items-center gap-2">
               <h2 class="text-xl sm:text-2xl font-bold text-earth-primary">ร้านหนังสือของมีนา (Meena's Shelf)</h2>
@@ -652,23 +787,27 @@
                 ผู้ให้เช่าระดับพรีเมียม ★ 4.9
               </span>
             </div>
-            <p class="text-xs text-earth-muted mt-0.5">ศูนย์จัดการหนังสือ ส่งต่อความรู้ และติดตามรายการหนังสือของคุณแบบเรียลไทม์</p>
+            <p class="text-xs text-earth-muted mt-0.5">ศูนย์จัดการหนังสือ ส่งต่อความรู้
+              และติดตามรายการหนังสือของคุณแบบเรียลไทม์</p>
           </div>
         </div>
-        <button onclick="showView('seller-add')" class="px-5 py-3 rounded-2xl bg-earth-primary text-white font-bold text-xs hover:bg-earth-primary-hover shadow-md transition flex items-center gap-1.5 whitespace-nowrap">
+        <button onclick="showView('seller-add')"
+          class="px-5 py-3 rounded-2xl bg-earth-primary text-white font-bold text-xs hover:bg-earth-primary-hover shadow-md transition flex items-center gap-1.5 whitespace-nowrap">
           <span class="material-symbols-outlined text-sm">add</span> ลงขาย/ให้เช่าหนังสือใหม่
         </button>
       </div>
 
       <!-- Inventory Table Container (Note: Omitted Revenue, Rented & Shipping Cards per user instructions) -->
       <div class="bg-white rounded-3xl p-6 border border-earth-border shadow-sm space-y-4">
-        
+
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-earth-border">
           <div>
             <h3 class="font-bold text-earth-primary text-base">จัดการสต็อกและสถานะการเช่ายืม</h3>
             <p class="text-xs text-earth-muted">ติดตามรายการหนังสือของคุณ และตรวจสอบความพร้อมในการให้บริการ</p>
           </div>
-          <span class="bg-earth-bg border border-earth-border text-earth-primary px-3 py-1 rounded-full text-xs font-semibold self-start sm:self-auto" id="shelf-total-badge">
+          <span
+            class="bg-earth-bg border border-earth-border text-earth-primary px-3 py-1 rounded-full text-xs font-semibold self-start sm:self-auto"
+            id="shelf-total-badge">
             หนังสือทั้งหมดในคลัง: 3 เล่ม
           </span>
         </div>
@@ -698,17 +837,27 @@
     <!-- ======================================================================= -->
     <!-- VIEW 6: ORDER SUCCESS CELEBRATION -->
     <!-- ======================================================================= -->
-    <div id="view-success" class="hidden text-center max-w-xl mx-auto py-12 px-6 bg-white rounded-3xl border border-earth-border shadow-md space-y-5">
-      <div class="w-20 h-20 bg-earth-sage-light text-earth-sage rounded-full flex items-center justify-center mx-auto text-4xl">🎉</div>
+    <div id="view-success"
+      class="hidden text-center max-w-xl mx-auto py-12 px-6 bg-white rounded-3xl border border-earth-border shadow-md space-y-5">
+      <div
+        class="w-20 h-20 bg-earth-sage-light text-earth-sage rounded-full flex items-center justify-center mx-auto text-4xl">
+        🎉</div>
       <h2 class="text-2xl sm:text-3xl font-bold text-earth-primary">สั่งซื้อและชำระเงินสำเร็จเรียบร้อย!</h2>
-      <p class="text-sm text-earth-muted">ระบบ BookShare ได้รับคำสั่งซื้อของคุณแล้ว ผู้ให้เช่าและผู้ขายกำลังจัดเตรียมหนังสือเพื่อส่งมอบถึงบ้านคุณ</p>
+      <p class="text-sm text-earth-muted">ระบบ BookShare ได้รับคำสั่งซื้อของคุณแล้ว
+        ผู้ให้เช่าและผู้ขายกำลังจัดเตรียมหนังสือเพื่อส่งมอบถึงบ้านคุณ</p>
       <div class="bg-earth-bg p-4 rounded-2xl border border-earth-border text-left text-xs sm:text-sm space-y-2">
-        <div class="flex justify-between"><span class="text-earth-muted">รหัสคำสั่งซื้อ:</span><b class="text-earth-primary" id="success-order-id">BS-20241025-0992</b></div>
-        <div class="flex justify-between"><span class="text-earth-muted">ผู้รับพัสดุ:</span><b class="text-earth-primary" id="success-user-name">คุณมีนา</b></div>
-        <div class="flex justify-between"><span class="text-earth-muted">ที่อยู่จัดส่ง:</span><span class="text-earth-primary text-right max-w-xs truncate" id="success-address"></span></div>
-        <div class="flex justify-between border-t border-earth-border pt-2"><span class="font-bold text-earth-primary">ยอดชำระสุทธิ:</span><b class="text-earth-accent text-base" id="success-total">฿627</b></div>
+        <div class="flex justify-between"><span class="text-earth-muted">รหัสคำสั่งซื้อ:</span><b
+            class="text-earth-primary" id="success-order-id">BS-20241025-0992</b></div>
+        <div class="flex justify-between"><span class="text-earth-muted">ผู้รับพัสดุ:</span><b
+            class="text-earth-primary" id="success-user-name">คุณมีนา</b></div>
+        <div class="flex justify-between"><span class="text-earth-muted">ที่อยู่จัดส่ง:</span><span
+            class="text-earth-primary text-right max-w-xs truncate" id="success-address"></span></div>
+        <div class="flex justify-between border-t border-earth-border pt-2"><span
+            class="font-bold text-earth-primary">ยอดชำระสุทธิ:</span><b class="text-earth-accent text-base"
+            id="success-total">฿627</b></div>
       </div>
-      <button onclick="showView('home')" class="w-full py-3.5 bg-earth-primary text-white font-bold rounded-2xl hover:bg-earth-primary-hover shadow-md transition">
+      <button onclick="showView('home')"
+        class="w-full py-3.5 bg-earth-primary text-white font-bold rounded-2xl hover:bg-earth-primary-hover shadow-md transition">
         ← กลับสู่หน้าแรกเพื่ออ่านหนังสือต่อ
       </button>
     </div>
@@ -716,33 +865,42 @@
   </main>
 
   <!-- Modals -->
-  <div id="how-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+  <div id="how-modal"
+    class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-earth-border shadow-xl space-y-4">
       <div class="flex items-center justify-between border-b border-earth-border pb-3">
         <h3 class="font-bold text-earth-primary text-lg flex items-center gap-2">
           <span class="material-symbols-outlined text-earth-accent">info</span> วิธีการยืม - คืนหนังสือ
         </h3>
-        <button onclick="closeModal('how-modal')" class="text-earth-muted hover:text-earth-primary"><span class="material-symbols-outlined">close</span></button>
+        <button onclick="closeModal('how-modal')" class="text-earth-muted hover:text-earth-primary"><span
+            class="material-symbols-outlined">close</span></button>
       </div>
       <div class="text-xs sm:text-sm text-earth-text space-y-3 leading-relaxed">
         <p><b>1. เลือกหนังสือและระยะเวลา:</b> เลือกระยะเวลาที่ต้องการยืม (สูงสุด 30 วัน)</p>
         <p><b>2. ชำระเงิน &amp; ค่ามัดจำ:</b> ปลอดภัย คุ้มครองความเสียหาย 100%</p>
         <p><b>3. ส่งคืนสะดวก:</b> ส่งคืนพัสดุ และรับเงินมัดจำโอนคืนเข้าพร้อมเพย์ภายใน 24 ชม.</p>
       </div>
-      <button onclick="closeModal('how-modal')" class="w-full py-3 bg-earth-primary text-white font-bold rounded-xl hover:bg-earth-primary-hover transition">เข้าใจแล้ว</button>
+      <button onclick="closeModal('how-modal')"
+        class="w-full py-3 bg-earth-primary text-white font-bold rounded-xl hover:bg-earth-primary-hover transition">เข้าใจแล้ว</button>
     </div>
   </div>
 
-  <div id="login-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+  <div id="login-modal"
+    class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full border border-earth-border shadow-xl space-y-4">
       <div class="flex items-center justify-between border-b border-earth-border pb-3">
         <h3 class="font-bold text-earth-primary text-lg">เข้าสู่ระบบ BookShare</h3>
-        <button onclick="closeModal('login-modal')" class="text-earth-muted hover:text-earth-primary"><span class="material-symbols-outlined">close</span></button>
+        <button onclick="closeModal('login-modal')" class="text-earth-muted hover:text-earth-primary"><span
+            class="material-symbols-outlined">close</span></button>
       </div>
       <form onsubmit="handleLoginSubmit(event)" class="space-y-3 text-xs">
-        <div><label class="block font-medium mb-1">ชื่อ-นามสกุล</label><input type="text" id="login-name-input" value="คุณมีนา" class="w-full p-2.5 rounded-xl bg-earth-bg border border-earth-border" required/></div>
-        <div><label class="block font-medium mb-1">เบอร์โทรศัพท์</label><input type="tel" id="login-phone-input" value="081-234-5678" class="w-full p-2.5 rounded-xl bg-earth-bg border border-earth-border" required/></div>
-        <button type="submit" class="w-full py-3 bg-earth-primary text-white font-bold rounded-xl hover:bg-earth-primary-hover transition mt-2">ยืนยันเข้าสู่ระบบ</button>
+        <div><label class="block font-medium mb-1">ชื่อ-นามสกุล</label><input type="text" id="login-name-input"
+            value="คุณมีนา" class="w-full p-2.5 rounded-xl bg-earth-bg border border-earth-border" required /></div>
+        <div><label class="block font-medium mb-1">เบอร์โทรศัพท์</label><input type="tel" id="login-phone-input"
+            value="081-234-5678" class="w-full p-2.5 rounded-xl bg-earth-bg border border-earth-border" required />
+        </div>
+        <button type="submit"
+          class="w-full py-3 bg-earth-primary text-white font-bold rounded-xl hover:bg-earth-primary-hover transition mt-2">ยืนยันเข้าสู่ระบบ</button>
       </form>
     </div>
   </div>
@@ -927,8 +1085,17 @@
     function renderBooks() {
       const search = document.getElementById('header-search').value.toLowerCase().trim();
       const grid = document.getElementById('book-grid');
-      const list = BOOKS.filter(b => (activeCategory === 'ทั้งหมด' || b.category === activeCategory) && (!search || b.title.toLowerCase().includes(search) || b.author.toLowerCase().includes(search)));
+      const allBooks = [...BOOKS, ...myBooks];
+      const list = allBooks.filter(book => {
+        if (
+          activeCategory === "📘 หนังสือของคุณ"
+          && !book.isMyBook
+        ) {
+          return false;
+        }
 
+        return true;
+      });
       grid.innerHTML = list.map(b => `
         <div class="bg-white rounded-2xl p-4 border border-earth-border shadow-sm hover:shadow-md transition flex flex-col justify-between">
           <div>
@@ -957,6 +1124,19 @@
     function filterBooks() { renderBooks(); }
 
     function openBookDetail(id) {
+      if (selectedBook.isMyBook) {
+        document.getElementById("option-rent-card").classList.add("hidden");
+        document.getElementById("option-buy-card").classList.add("hidden");
+        document.getElementById("rental-calendar-box").classList.add("hidden");
+        document.getElementById("btn-detail-instant").classList.add("hidden");
+
+        document.getElementById("detail-desc").insertAdjacentHTML(
+          "afterend",
+          `<div class="bg-earth-sage-light text-earth-sage-dark p-3 rounded-xl">
+      หนังสือเล่มนี้เป็นหนังสือของคุณ ดูรายละเอียดได้เท่านั้น
+    </div>`
+        );
+      }
       selectedBook = BOOKS.find(b => b.id === id) || BOOKS[0];
       document.getElementById('detail-breadcrumb').innerText = `หน้าแรก / ${selectedBook.category} / ${selectedBook.title}`;
       document.getElementById('detail-img').src = selectedBook.img;
@@ -1195,7 +1375,10 @@
         typeClass: 'bg-earth-sage-light text-earth-sage-dark',
         priceStructure: `เช่า ฿${rent}/วัน • ขาย ฿${sale}<br>มัดจำ ฿${dep} (จากราคาปก ฿320)`,
         status: '🟢 ว่าง พร้อมให้เช่า/ซื้อ',
-        img: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=150&q=80'
+        img: uploadedImageData[0],
+        thumbnails: uploadedImageData,
+        ownerId: currentUser.phone,
+        isMyBook: true
       });
 
       alert(`บันทึกหนังสือ '${title}' เรียบร้อยแล้ว!`);
@@ -1259,4 +1442,5 @@
     });
   </script>
 </body>
+
 </html>
