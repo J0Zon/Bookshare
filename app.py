@@ -1350,6 +1350,277 @@ elif st.session_state.current_view == 'order_success':
         st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
 
+# ==============================================================================
+# 6. VIEW 1: HOME PAGE
+# ==============================================================================
+if st.session_state.current_view == 'home':
+    col_srch, col_to_cart = st.columns([4, 1.2])
+    with col_srch:
+        st.session_state.search_query = st.text_input(
+            "ค้นหา",
+            value=st.session_state.search_query,
+            placeholder="🔍 ค้นหาชื่อหนังสือ, ผู้แต่ง, หรือหมวดหมู่...",
+            label_visibility="collapsed"
+        )
+    with col_to_cart:
+        if st.button("👜 ไปที่ตะกร้าสินค้า", use_container_width=True):
+            st.session_state.current_view = 'cart'
+            st.rerun()
+
+    # Hero Banner
+    col_ht, col_hc = st.columns([1.8, 1.2])
+    with col_ht:
+        st.markdown(
+            """
+            <div class="hero-container">
+                <span class="hero-badge">🌱 ชุมชนนักอ่านและการแบ่งปันหนังสือยั่งยืน</span>
+                <div class="hero-h1">
+                    ส่งต่อเรื่องราวดีๆ <br>
+                    <u>อ่านเพลินไม่ต้องซื้อขาด</u> <br>
+                    หรือสร้างรายได้จากตู้หนังสือ
+                </div>
+                <div class="hero-desc">
+                    เช่ายืมเริ่มต้นเพียง <b>฿5 /วัน</b> ดื่มด่ำวรรณกรรมชิ้นโปรดแบบสบายกระเป๋า พร้อมส่งฟรีถึงประตูบ้านเมื่อเช่าครบ 3 เล่มขึ้นไป
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    with col_hc:
+        st.markdown(
+            """
+            <div style="background-color:#FFFFFF; border:1px solid #E8DDD0; border-radius:24px; padding:16px; box-shadow:0 6px 20px rgba(61,46,36,0.05); text-align:center;">
+                <div style="position:relative; border-radius:16px; overflow:hidden; margin-bottom:12px;">
+                    <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80" style="width:100%; height:200px; object-fit:cover;">
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    # Categories
+    st.markdown("<h3 style='margin:10px 0 6px 0; font-size:20px; color:#4A3528;'>หมวดหมู่ยอดนิยม</h3>", unsafe_allow_html=True)
+    cats = ["ทั้งหมด", "📘 หนังสือของคุณ", "วรรณกรรม & นิยายแปล", "จิตวิทยา & พัฒนาตนเอง", "ธุรกิจ & การลงทุน", "หนังสือภาพ & ไลฟ์สไตล์"]
+    c_cols = st.columns(len(cats))
+    for i, c in enumerate(cats):
+        with c_cols[i]:
+            lbl = f"✓ {c}" if st.session_state.active_category == c else c
+            if st.button(lbl, key=f"cat_sel_{i}", use_container_width=True):
+                st.session_state.active_category = c
+                st.rerun()
+
+    # Filter books
+    f_books = []
+    for b in st.session_state.all_books:
+        if st.session_state.active_category == "📘 หนังสือของคุณ":
+            if not b.get('is_my_book', False):
+                continue
+        elif st.session_state.active_category != "ทั้งหมด" and b['category'] != st.session_state.active_category:
+            continue
+            
+        if st.session_state.search_query:
+            q = st.session_state.search_query.lower()
+            if q not in b['title'].lower() and q not in b['author'].lower() and q not in b['category'].lower():
+                continue
+        f_books.append(b)
+
+    st.markdown(f"<div style='margin:16px 0 10px 0;'><b style='font-size:18px; color:#4A3528;'>รายการหนังสือ ({len(f_books)} เล่ม)</b></div>", unsafe_allow_html=True)
+
+    if not f_books:
+        st.info("ไม่พบรายการหนังสือในหมวดหมู่นี้")
+    else:
+        grid_cols = st.columns(4)
+        for idx, book in enumerate(f_books):
+            col_pos = idx % 4
+            with grid_cols[col_pos]:
+                if book.get('is_my_book', False):
+                    badge_html = "<span class='badge-mybook'>📘 หนังสือของคุณ</span>"
+                elif book['status'] == 'available':
+                    badge_html = "<span class='badge-available'>🟢 พร้อมให้ยืม</span>"
+                elif book['status'] == 'rented':
+                    badge_html = "<span class='badge-rented'>🔴 ถูกยืมอยู่</span>"
+                else:
+                    badge_html = "<span class='badge-sale'>🏷️ สำหรับขายเท่านั้น</span>"
+
+                price_html = f"<div><span style='font-size:10px; color:#8D7B68;'>ยืม ฿{book['rent_price']}/วัน</span><br><b style='font-size:14px; color:#4A3528;'>ซื้อ ฿{book['buy_price']}</b></div>"
+
+                st.markdown(
+                    f"""
+                    <div class="card-book">
+                        <div style="position:relative;">
+                            <img src="{book['img']}" class="book-cover-img" alt="{book['title']}">
+                            <div style="position:absolute; top:6px; left:6px;">{badge_html}</div>
+                            <div style="position:absolute; bottom:14px; right:6px;"><span class='badge-condition'>{book['condition']}</span></div>
+                        </div>
+                        <div style="font-size:11px; color:#8D7B68;">{book['category']}</div>
+                        <h4 style="margin:2px 0 4px 0; font-size:13px; font-weight:700; color:#382B24; height:36px; overflow:hidden; line-height:1.3;">
+                            {book['title']}
+                        </h4>
+                        <div style="font-size:11px; color:#6C5E53; margin-bottom:8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                            {book['author']}
+                        </div>
+                        <div style="border-top:1px solid #EADBCE; padding-top:8px; margin-top:4px;">
+                            {price_html}
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+                btn_txt = "🔍 ดูรายละเอียด" if book.get('is_my_book') else "🔍 ดูรายละเอียด & สั่งซื้อ"
+
+                if st.button(btn_txt, key=f"btn_bk_{book['id']}", use_container_width=True):
+                    st.session_state.selected_book_id = book['id']
+                    st.session_state.current_view = 'detail'
+                    st.rerun()
+
+                st.markdown("<div style='margin-bottom:12px;'></div>", unsafe_allow_html=True)
+
+# ==============================================================================
+# 7. VIEW 2: BOOK DETAIL PAGE
+# ==============================================================================
+elif st.session_state.current_view == 'detail':
+    book = get_book(st.session_state.selected_book_id)
+
+    b1, b2 = st.columns([1.5, 8.5])
+    with b1:
+        if st.button("← กลับหน้าหลัก", key="back_home_btn"):
+            st.session_state.current_view = 'home'
+            st.rerun()
+    with b2:
+        st.markdown(f"<div style='font-size:13px; color:#8D7B68; padding-top:6px;'>หน้าแรก / หมวด {book['category']} / <b style='color:#4A3528;'>{book['title']}</b></div>", unsafe_allow_html=True)
+
+    col_l, col_r = st.columns([4.2, 5.8], gap="large")
+
+    with col_l:
+        st.markdown(
+            f"""
+            <div style="position:relative; background-color:#FFFFFF; border:1px solid #EADBCE; border-radius:20px; overflow:hidden; padding:16px; text-align:center;">
+                <img src="{book['img']}" style="width:100%; max-height:400px; object-fit:contain; border-radius:14px;">
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    with col_r:
+        if book.get('is_my_book', False):
+            st.warning("🔒 หนังสือเล่มนี้เป็นหนังสือที่คุณลงทะเบียนเข้าระบบ สามารถเข้าดูรายละเอียดได้เท่านั้น ไม่สามารถสั่งซื้อหรือเช่าได้")
+
+        st.markdown(
+            f"""
+            <h2 style="margin:0 0 4px 0; font-size:24px; color:#4A3528; line-height:1.2;">{book.get('full_title', book['title'])}</h2>
+            <div style="font-size:12px; color:#6C5E53; margin-bottom:10px;">ผู้แต่ง: {book['author']} | หมวดหมู่: {book['category']}</div>
+            <p style="font-size:12px; color:#4A3528; line-height:1.6; background-color:#FAF6F0; padding:10px 14px; border-radius:12px; border:1px solid #EADBCE;">
+                {book['desc']}
+            </p>
+            """,
+            unsafe_allow_html=True
+        )
+
+        if not book.get('is_my_book', False):
+            mode_choice = st.radio(
+                "เลือกรูปแบบที่ต้องการ",
+                options=['rent', 'buy'],
+                format_func=lambda x: f"📖 ยืมอ่าน (฿{book['rent_price']}/วัน + มัดจำ ฿{book['deposit']})" if x == 'rent' else f"🛍️ ซื้อขาด (฿{book['buy_price']})",
+                key=f"mode_choice_{book['id']}"
+            )
+
+            if mode_choice == 'rent':
+                rent_days = st.slider("จำนวนวันที่ต้องการยืม", min_value=3, max_value=30, value=7)
+                st.info(f"ค่ายืมรวม: ฿{book['rent_price'] * rent_days} (มัดจำคืนได้: ฿{book['deposit']})")
+
+            if st.button("🛒 เพิ่มลงในตะกร้า", use_container_width=True):
+                if mode_choice == 'rent':
+                    st.session_state.cart_rent.append({
+                        'id': book['id'], 'title': book['title'], 'author': book['author'],
+                        'condition': book['condition'], 'rent_days': rent_days, 'start_date': str(date.today()),
+                        'return_date': str(date.today() + timedelta(days=rent_days)), 'rate_per_day': book['rent_price'],
+                        'total_rent': book['rent_price'] * rent_days, 'deposit': book['deposit'], 'img': book['img']
+                    })
+                else:
+                    st.session_state.cart_buy.append({
+                        'id': book['id'], 'title': book['title'], 'author': book['author'],
+                        'condition': book['condition'], 'buy_price': book['buy_price'],
+                        'original_price': book['original_price'], 'img': book['img']
+                    })
+                st.toast("เพิ่มลงในตะกร้าเรียบร้อยแล้ว!", icon="🛒")
+        else:
+            st.button("🚫 ไม่สามารถกดสั่งซื้อหนังสือของตัวเองได้", disabled=True, use_container_width=True)
+
+# ==============================================================================
+# 8. VIEW 3: CART & CHECKOUT PAGE
+# ==============================================================================
+elif st.session_state.current_view == 'cart':
+    st.markdown("<h2>👜 ตะกร้าสินค้าและการชำระเงิน</h2>", unsafe_allow_html=True)
+    
+    tot_cnt = len(st.session_state.cart_rent) + len(st.session_state.cart_buy)
+    if tot_cnt == 0:
+        st.info("ตะกร้าสินค้าของคุณยังว่างอยู่ ลองไปเลือกชมหนังสือหน้าแรกดูสิ!")
+        if st.button("← เลือกชมหนังสือ"):
+            st.session_state.current_view = 'home'
+            st.rerun()
+    else:
+        c_left, c_right = st.columns([6, 4], gap="large")
+        
+        with c_left:
+            if st.session_state.cart_rent:
+                st.markdown("### 📖 รายการยืมหนังสือ")
+                for i, r_item in enumerate(st.session_state.cart_rent):
+                    st.markdown(f"**{r_item['title']}** ({r_item['rent_days']} วัน)")
+                    st.write(f"ค่ายืม: ฿{r_item['total_rent']} | ค่ามัดจำ: ฿{r_item['deposit']}")
+                    if st.button(f"ลบรายการเช่าที่ {i+1}", key=f"del_r_{i}"):
+                        st.session_state.cart_rent.pop(i)
+                        st.rerun()
+                    st.markdown("---")
+
+            if st.session_state.cart_buy:
+                st.markdown("### 🛍️ รายการซื้อขาด")
+                for j, b_item in enumerate(st.session_state.cart_buy):
+                    st.markdown(f"**{b_item['title']}** - ฿{b_item['buy_price']}")
+                    if st.button(f"ลบรายการซื้อที่ {j+1}", key=f"del_b_{j}"):
+                        st.session_state.cart_buy.pop(j)
+                        st.rerun()
+                    st.markdown("---")
+
+        with c_right:
+            st.markdown("<div style='background-color:#FFFFFF; border:1px solid #EADBCE; border-radius:16px; padding:20px;'>", unsafe_allow_html=True)
+            st.markdown("### 📋 สรุปยอดชำระ")
+            
+            rent_sum = sum(x['total_rent'] for x in st.session_state.cart_rent)
+            deposit_sum = sum(x['deposit'] for x in st.session_state.cart_rent)
+            buy_sum = sum(x['buy_price'] for x in st.session_state.cart_buy)
+            grand_total = rent_sum + deposit_sum + buy_sum
+
+            st.write(f"ค่าบริการยืมรวม: ฿{rent_sum}")
+            st.write(f"เงินมัดจำรวม (ได้รับคืนเมื่อส่งคืนหนังสือ): ฿{deposit_sum}")
+            st.write(f"ราคาสินค้าสั่งซื้อรวม: ฿{buy_sum}")
+            st.markdown(f"### **ยอดสุทธิ: ฿{grand_total}**")
+
+            if st.button("💳 ยืนยันการสั่งซื้อและชำระเงิน", use_container_width=True):
+                st.session_state.last_order = {
+                    'rent_items': st.session_state.cart_rent.copy(),
+                    'buy_items': st.session_state.cart_buy.copy(),
+                    'total': grand_total
+                }
+                st.session_state.cart_rent = []
+                st.session_state.cart_buy = []
+                st.session_state.current_view = 'order_success'
+                st.rerun()
+                
+            st.markdown("</div>", unsafe_allow_html=True)
+
+# ==============================================================================
+# 9. VIEW 4: ORDER SUCCESS PAGE
+# ==============================================================================
+elif st.session_state.current_view == 'order_success':
+    st.balloons()
+    st.success("🎉 ชำระเงินและทำรายการสำเร็จ!")
+    st.markdown("ทางเรากำลังเตรียมการจัดส่งหนังสือให้คุณอย่างเร็วที่สุด")
+    
+    if st.button("← กลับสู่หน้าหลัก", use_container_width=True):
+        st.session_state.current_view = 'home'
+        st.rerun()
 
 ## ==============================================================================
 # 10. VIEW 5: SELLER CENTER & ADD BOOK PAGE
