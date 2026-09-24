@@ -61,6 +61,7 @@
       display: none;
     }
   </style>
+<base target="_blank">
 </head>
 
 <body class="bg-earth-bg text-earth-text antialiased">
@@ -318,6 +319,12 @@
           <p class="text-xs sm:text-sm text-earth-primary bg-earth-bg/70 p-3.5 rounded-2xl border border-earth-border leading-relaxed"
             id="detail-desc"></p>
 
+          <div id="detail-owner-notice"
+            class="hidden bg-[#F0EAF7] border border-[#7251B5]/30 text-[#5B3E9E] text-xs sm:text-sm p-3.5 rounded-2xl leading-relaxed">
+            🔒 หนังสือเล่มนี้เป็นหนังสือที่คุณลงทะเบียนเข้าระบบ สามารถดูรายละเอียดได้อย่างเดียว
+            ไม่สามารถเช่าหรือสั่งซื้อได้
+          </div>
+
           <div class="space-y-3">
             <b class="text-sm text-earth-primary block">เลือกรูปแบบที่ต้องการ:</b>
             <div id="option-rent-card" onclick="selectDetailMode('rent')"
@@ -410,7 +417,7 @@
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-            <button onclick="handleAddToCartFromDetail()"
+            <button onclick="handleAddToCartFromDetail()" id="btn-detail-add"
               class="py-3.5 rounded-2xl bg-white border border-earth-border text-earth-primary font-bold text-sm hover:bg-earth-bg shadow-sm transition flex items-center justify-center gap-2">
               <span class="material-symbols-outlined text-lg">shopping_cart</span> เพิ่มลงตะกร้า
             </button>
@@ -582,13 +589,6 @@
               class="text-earth-muted font-normal">(อย่างน้อย 2 ภาพ)</span></b>
 
           <!-- Dropzone -->
-          <div
-            class="border-2 border-dashed border-[#D5C5B5] bg-earth-bg rounded-2xl p-6 text-center space-y-2 cursor-pointer hover:bg-earth-secondary/20 transition">
-            <span class="material-symbols-outlined text-4xl text-earth-muted">add_photo_alternate</span>
-            <b class="text-xs text-earth-primary block">คลิกเพื่ออัปโหลด หรือลากวางไฟล์ที่นี่</b>
-            <p class="text-[11px] text-earth-muted">แนะนำ: ถ่ายปกหน้า, ปกหลัง, สันหนังสือ และรอยขีดเขียน (ถ้ามี)</p>
-            <span class="text-[10px] text-earth-muted/80 block">รองรับ JPG, PNG, WEBP • ไม่เกิน 10MB/รูป</span>
-          </div>
           <input type="file" id="add-b-images" accept="image/jpeg,image/png,image/webp" multiple class="hidden"
             onchange="previewUploadedImages(event)" />
 
@@ -609,28 +609,7 @@
 
           <div id="uploaded-image-preview" class="grid grid-cols-3 gap-3 mt-3"></div>
 
-          <!-- Preview Row -->
-          <div class="grid grid-cols-3 gap-3">
-            <div class="relative rounded-xl overflow-hidden border border-earth-border aspect-[3/4] bg-earth-bg">
-              <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=300&q=80"
-                class="w-full h-full object-cover" />
-              <span
-                class="absolute top-1.5 left-1.5 bg-earth-primary/90 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">รูปปกหลัก</span>
-            </div>
-            <div class="relative rounded-xl overflow-hidden border border-earth-border aspect-[3/4] bg-earth-bg">
-              <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=300&q=80"
-                class="w-full h-full object-cover" />
-              <span
-                class="absolute top-1.5 left-1.5 bg-earth-primary/90 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">สันกระดาษ</span>
-            </div>
-            <div
-              class="border-2 border-dashed border-[#D5C5B5] rounded-xl flex flex-col items-center justify-center text-earth-muted bg-earth-bg aspect-[3/4] cursor-pointer hover:bg-earth-secondary/30 transition">
-              <span class="text-2xl font-bold">+</span>
-              <span class="text-[11px]">เพิ่มรูป</span>
-            </div>
-          </div>
-
-          <!-- Condition Slider Box -->
+          <!-- Condition Slider Box -->          <!-- Condition Slider Box -->
           <div class="pt-2 space-y-2">
             <div class="flex justify-between items-center">
               <b class="text-xs text-earth-primary">ประเมินสภาพหนังสือ (Condition) *</b>
@@ -997,6 +976,9 @@
       }
     ];
 
+    let myBooks = [];
+    let uploadedImageData = [];
+
     let meenaBooks = [
       {
         id: 1,
@@ -1063,6 +1045,7 @@
 
       if (view === 'cart') renderCart();
       if (view === 'seller-shelf') renderShelf();
+      if (view === 'seller-add') resetSellerForm();
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -1071,7 +1054,7 @@
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
     // Render Categories & Books
-    const CATEGORIES = ['ทั้งหมด', 'วรรณกรรม & นิยายแปล', 'จิตวิทยา & พัฒนาตนเอง', 'ธุรกิจ & การลงทุน', 'หนังสือภาพ & ไลฟ์สไตล์'];
+    const CATEGORIES = ['ทั้งหมด', '📘 หนังสือของคุณ', 'วรรณกรรม & นิยายแปล', 'จิตวิทยา & พัฒนาตนเอง', 'ธุรกิจ & การลงทุน', 'หนังสือภาพ & ไลฟ์สไตล์'];
     function renderCategories() {
       const c = document.getElementById('category-pills');
       c.innerHTML = CATEGORIES.map(cat => `
@@ -1085,23 +1068,36 @@
     function renderBooks() {
       const search = document.getElementById('header-search').value.toLowerCase().trim();
       const grid = document.getElementById('book-grid');
-      const allBooks = [...BOOKS, ...myBooks];
+      const allBooks = [...myBooks, ...BOOKS];
       const list = allBooks.filter(book => {
-        if (
-          activeCategory === "📘 หนังสือของคุณ"
-          && !book.isMyBook
-        ) {
-          return false;
+        if (activeCategory === '📘 หนังสือของคุณ') return !!book.isMyBook;
+        if (activeCategory !== 'ทั้งหมด' && book.category !== activeCategory) return false;
+        if (search) {
+          const hay = (book.title + ' ' + book.author + ' ' + book.category).toLowerCase();
+          if (!hay.includes(search)) return false;
         }
-
         return true;
       });
-      grid.innerHTML = list.map(b => `
+
+      if (list.length === 0) {
+        grid.innerHTML = '<p class="col-span-full text-center text-sm text-earth-muted py-8">ไม่พบหนังสือในหมวดหมู่นี้</p>';
+        return;
+      }
+
+      grid.innerHTML = list.map(b => {
+        const badge = b.isMyBook
+          ? '<span class="absolute top-2 left-2 px-2.5 py-0.5 rounded-full bg-[#7251B5] text-white text-[10px] font-bold">📘 หนังสือของคุณ</span>'
+          : `<span class="absolute top-2 left-2 px-2.5 py-0.5 rounded-full bg-earth-sage text-white text-[10px] font-bold">${b.statusText}</span>`;
+        const priceLine = (b.rentRate > 0)
+          ? `<span class="text-[10px] text-earth-muted block">ยืม ฿${b.rentRate}/วัน</span>
+             <span class="text-xs font-bold text-earth-primary">ซื้อ ฿${b.buyPrice}</span>`
+          : `<span class="text-xs font-bold text-earth-primary">ขาย ฿${b.buyPrice}</span>`;
+        return `
         <div class="bg-white rounded-2xl p-4 border border-earth-border shadow-sm hover:shadow-md transition flex flex-col justify-between">
           <div>
             <div class="relative w-full aspect-[3/4] rounded-xl overflow-hidden bg-earth-bg mb-3 cursor-pointer" onclick="openBookDetail(${b.id})">
               <img src="${b.img}" class="w-full h-full object-cover"/>
-              <span class="absolute top-2 left-2 px-2.5 py-0.5 rounded-full bg-earth-sage text-white text-[10px] font-bold">${b.statusText}</span>
+              ${badge}
               <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-white text-earth-primary text-[10px] font-semibold">${b.condition}</span>
             </div>
             <span class="text-[11px] text-earth-muted block mb-0.5">${b.category}</span>
@@ -1109,35 +1105,22 @@
             <p class="text-xs text-earth-muted truncate mb-2">${b.author}</p>
           </div>
           <div class="pt-2 border-t border-earth-border flex items-center justify-between mt-1">
-            <div>
-              <span class="text-[10px] text-earth-muted block">ยืม ฿${b.rentRate}/วัน</span>
-              <span class="text-xs font-bold text-earth-primary">ซื้อ ฿${b.buyPrice}</span>
-            </div>
+            <div>${priceLine}</div>
             <button onclick="openBookDetail(${b.id})" class="p-2 rounded-xl bg-earth-primary text-white hover:bg-earth-primary-hover shadow-sm">
               <span class="material-symbols-outlined text-base">arrow_forward</span>
             </button>
           </div>
-        </div>
-      `).join('');
+        </div>`;
+      }).join('');
     }
 
     function filterBooks() { renderBooks(); }
 
     function openBookDetail(id) {
-      if (selectedBook.isMyBook) {
-        document.getElementById("option-rent-card").classList.add("hidden");
-        document.getElementById("option-buy-card").classList.add("hidden");
-        document.getElementById("rental-calendar-box").classList.add("hidden");
-        document.getElementById("btn-detail-instant").classList.add("hidden");
+      const found = [...BOOKS, ...myBooks].find(b => b.id === id);
+      if (!found) return;
+      selectedBook = found;
 
-        document.getElementById("detail-desc").insertAdjacentHTML(
-          "afterend",
-          `<div class="bg-earth-sage-light text-earth-sage-dark p-3 rounded-xl">
-      หนังสือเล่มนี้เป็นหนังสือของคุณ ดูรายละเอียดได้เท่านั้น
-    </div>`
-        );
-      }
-      selectedBook = BOOKS.find(b => b.id === id) || BOOKS[0];
       document.getElementById('detail-breadcrumb').innerText = `หน้าแรก / ${selectedBook.category} / ${selectedBook.title}`;
       document.getElementById('detail-img').src = selectedBook.img;
       document.getElementById('detail-condition-badge').innerText = `● ${selectedBook.conditionFull}`;
@@ -1146,25 +1129,46 @@
       document.getElementById('detail-title').innerText = selectedBook.fullTitle;
       document.getElementById('detail-author').innerText = selectedBook.author;
       document.getElementById('detail-desc').innerText = selectedBook.desc;
-      document.getElementById('detail-seller').innerText = selectedBook.seller;
-      document.getElementById('detail-rating').innerText = `★ ${selectedBook.rating}`;
+      document.getElementById('detail-seller').innerText = selectedBook.seller || currentUser.name;
+      document.getElementById('detail-rating').innerText = `★ ${selectedBook.rating || '5.0'}`;
       document.getElementById('detail-rent-rate').innerText = `฿${selectedBook.rentRate} /วัน`;
       document.getElementById('detail-buy-price').innerText = `฿${selectedBook.buyPrice}`;
       document.getElementById('detail-original-price').innerText = `฿${selectedBook.originalPrice}`;
 
       const tBox = document.getElementById('detail-thumbnails');
-      tBox.innerHTML = selectedBook.thumbnails.map(t => `<img src="${t}" onclick="document.getElementById('detail-img').src='${t}'" class="w-full h-16 object-cover rounded-xl border border-earth-border cursor-pointer"/>`).join('');
+      tBox.innerHTML = (selectedBook.thumbnails || [selectedBook.img]).map(t =>
+        `<img src="${t}" onclick="document.getElementById('detail-img').src='${t}'" class="w-full h-16 object-cover rounded-xl border border-earth-border cursor-pointer"/>`
+      ).join('');
 
       const now = new Date();
       const end = new Date(); end.setDate(now.getDate() + 10);
       document.getElementById('input-start-date').value = now.toISOString().split('T')[0];
       document.getElementById('input-return-date').value = end.toISOString().split('T')[0];
 
-      selectDetailMode('rent');
+      // หนังสือของตัวเอง: ดูรายละเอียดได้อย่างเดียว สั่งซื้อ/เช่าไม่ได้
+      const ownerNotice = document.getElementById('detail-owner-notice');
+      if (selectedBook.isMyBook) {
+        ownerNotice.classList.remove('hidden');
+        document.getElementById('option-rent-card').classList.add('hidden');
+        document.getElementById('option-buy-card').classList.add('hidden');
+        document.getElementById('rental-calendar-box').classList.add('hidden');
+        document.getElementById('btn-detail-add').classList.add('hidden');
+        document.getElementById('btn-detail-instant').classList.add('hidden');
+      } else {
+        ownerNotice.classList.add('hidden');
+        document.getElementById('option-rent-card').classList.remove('hidden');
+        document.getElementById('option-buy-card').classList.remove('hidden');
+        document.getElementById('rental-calendar-box').classList.remove('hidden');
+        document.getElementById('btn-detail-add').classList.remove('hidden');
+        document.getElementById('btn-detail-instant').classList.remove('hidden');
+        selectDetailMode('rent');
+      }
+
       showView('detail');
     }
 
     function selectDetailMode(mode) {
+      if (selectedBook.isMyBook) return;
       detailMode = mode;
       const rentCard = document.getElementById('option-rent-card');
       const buyCard = document.getElementById('option-buy-card');
@@ -1211,6 +1215,10 @@
     }
 
     function handleAddToCartFromDetail() {
+      if (selectedBook.isMyBook) {
+        alert('🔒 นี่คือหนังสือของคุณ ดูรายละเอียดได้อย่างเดียว ไม่สามารถเช่าหรือสั่งซื้อได้');
+        return;
+      }
       if (detailMode === 'rent') {
         const s = new Date(document.getElementById('input-start-date').value);
         const e = new Date(document.getElementById('input-return-date').value);
@@ -1352,37 +1360,103 @@
       document.getElementById('add-condition-badge').innerText = text;
     }
 
+    function previewUploadedImages(event) {
+      const files = Array.from(event.target.files || []);
+      if (!files.length) return;
+      uploadedImageData = [];
+      const preview = document.getElementById('uploaded-image-preview');
+      preview.innerHTML = '';
+      files.slice(0, 6).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          uploadedImageData.push(e.target.result);
+          preview.appendChild(makePreviewThumb(e.target.result, uploadedImageData.length - 1));
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function makePreviewThumb(src, idx) {
+      const div = document.createElement('div');
+      div.className = 'relative rounded-xl overflow-hidden border border-earth-border aspect-[3/4] bg-earth-bg';
+      div.innerHTML = `<img src="${src}" class="w-full h-full object-cover"/>
+        <button onclick="removeUploadedImage(${idx})" title="ลบรูป" class="absolute top-1 right-1 bg-black/60 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center hover:bg-red-500">×</button>`;
+      return div;
+    }
+
+    function removeUploadedImage(idx) {
+      uploadedImageData.splice(idx, 1);
+      const preview = document.getElementById('uploaded-image-preview');
+      preview.innerHTML = '';
+      uploadedImageData.forEach((src, i) => preview.appendChild(makePreviewThumb(src, i)));
+    }
+
+    function resetSellerForm() {
+      document.getElementById('add-b-title').value = '';
+      document.getElementById('add-b-author').value = '';
+      document.getElementById('add-b-isbn').value = '';
+      document.getElementById('add-b-sale').value = '200';
+      document.getElementById('add-b-rent').value = '5';
+      document.getElementById('add-b-deposit').value = '150';
+      const fileInput = document.getElementById('add-b-images');
+      if (fileInput) fileInput.value = '';
+      uploadedImageData = [];
+      const preview = document.getElementById('uploaded-image-preview');
+      if (preview) preview.innerHTML = '';
+      const slider = document.querySelector('#view-seller-add input[type="range"]');
+      if (slider) slider.value = '95';
+      updateConditionPreview('95');
+    }
+
     function handleSaveNewBook() {
       const title = document.getElementById('add-b-title').value.trim();
       const author = document.getElementById('add-b-author').value.trim();
       const isbn = document.getElementById('add-b-isbn').value.trim();
-      const sale = document.getElementById('add-b-sale').value;
-      const rent = document.getElementById('add-b-rent').value;
-      const dep = document.getElementById('add-b-deposit').value;
+      const cat = document.getElementById('add-b-cat').value;
+      const sale = parseInt(document.getElementById('add-b-sale').value) || 0;
+      const rent = parseInt(document.getElementById('add-b-rent').value) || 0;
+      const dep = parseInt(document.getElementById('add-b-deposit').value) || 0;
       const lType = document.querySelector('input[name="listing_type"]:checked')?.value || 'ได้ทั้งเช่าและขาย ★';
+      const condText = document.getElementById('add-condition-badge').innerText;
 
-      if (!title) {
-        alert('กรุณากรอกชื่อหนังสือ');
+      if (!title || !author) {
+        alert('กรุณากรอกชื่อหนังสือและผู้แต่ง');
+        return;
+      }
+      if (uploadedImageData.length === 0) {
+        alert('กรุณาอัปโหลดรูปภาพหนังสืออย่างน้อย 1 รูป');
         return;
       }
 
-      meenaBooks.push({
-        id: meenaBooks.length + 101,
+      myBooks.unshift({
+        id: 1000 + Date.now() % 100000,
         title: title,
-        author: `${author} • แปลภาษาไทย`,
-        isbn: isbn || '978-616-04-4521-9',
-        typeBadge: `● ${lType}`,
-        typeClass: 'bg-earth-sage-light text-earth-sage-dark',
-        priceStructure: `เช่า ฿${rent}/วัน • ขาย ฿${sale}<br>มัดจำ ฿${dep} (จากราคาปก ฿320)`,
-        status: '🟢 ว่าง พร้อมให้เช่า/ซื้อ',
+        fullTitle: title,
+        author: author,
+        category: cat,
+        isbn: isbn || 'ไม่ระบุ',
+        status: 'my_book',
+        statusText: '📘 หนังสือของคุณ',
+        condition: condText.split(' ')[0],
+        conditionFull: condText,
+        buyPrice: sale,
+        originalPrice: sale + 50,
+        rentRate: rent,
+        deposit: dep,
         img: uploadedImageData[0],
-        thumbnails: uploadedImageData,
-        ownerId: currentUser.phone,
+        desc: `หนังสือที่คุณลงทะเบียนเข้าระบบ (${lType})`,
+        seller: currentUser.name,
+        rating: '5.0 (เจ้าของหนังสือ)',
+        thumbnails: uploadedImageData.slice(0, 3),
         isMyBook: true
       });
 
-      alert(`บันทึกหนังสือ '${title}' เรียบร้อยแล้ว!`);
-      showView('seller-shelf');
+      alert(`🎉 ลงทะเบียน '${title}' สำเร็จ! ไปดูได้ที่หมวด "📘 หนังสือของคุณ"`);
+
+      activeCategory = '📘 หนังสือของคุณ';
+      renderCategories();
+      renderBooks();
+      showView('home');
     }
 
     function renderShelf() {
