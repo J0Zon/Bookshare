@@ -747,6 +747,110 @@
       </form>
     </div>
   </div>
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 py-6">
+
+    <!-- VIEW 1: HOME PAGE -->
+    <div id="view-home" class="space-y-6">
+      <div class="flex flex-wrap gap-2" id="category-pills"></div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="book-grid"></div>
+    </div>
+
+    <!-- VIEW 2: BOOK DETAIL -->
+    <div id="view-detail" class="hidden space-y-6">
+      <button onclick="showView('home')" class="px-4 py-2 bg-white border border-earth-border rounded-xl text-xs font-bold text-earth-primary">
+        ← กลับหน้าหลัก
+      </button>
+
+      <div class="bg-white rounded-3xl p-6 border border-earth-border grid grid-cols-1 md:grid-cols-12 gap-8">
+        <div class="md:col-span-5">
+          <img id="detail-img" src="" class="w-full h-80 object-contain rounded-2xl bg-earth-bg border border-earth-border p-2"/>
+        </div>
+        <div class="md:col-span-7 space-y-4">
+          <span id="detail-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-earth-sage-light text-earth-sage-dark"></span>
+          <h2 id="detail-title" class="text-2xl font-bold text-earth-primary"></h2>
+          <p id="detail-author" class="text-xs text-earth-muted"></p>
+          <p id="detail-desc" class="text-sm bg-earth-bg p-4 rounded-xl border border-earth-border"></p>
+          
+          <div id="action-container" class="pt-4"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 3: ADD NEW BOOK FORM -->
+    <div id="view-seller-add" class="hidden space-y-6">
+      <h2 class="text-2xl font-bold text-earth-primary flex items-center gap-2">
+        <span class="material-symbols-outlined text-earth-accent">add_photo_alternate</span> ลงทะเบียนหนังสือใหม่เข้าสู่ระบบ
+      </h2>
+
+      <div class="bg-white rounded-3xl p-6 border border-earth-border grid grid-cols-1 md:grid-cols-12 gap-8">
+        <!-- Photo Upload Section -->
+        <div class="md:col-span-5 space-y-4">
+          <label class="block text-sm font-bold text-earth-primary">อัปโหลดรูปภาพหนังสือจริง *</label>
+          
+          <div class="border-2 border-dashed border-earth-border bg-earth-bg p-6 rounded-2xl text-center cursor-pointer hover:border-earth-accent transition">
+            <input type="file" id="file-input" accept="image/*" onchange="handleFileUpload(event)" class="hidden"/>
+            <label for="file-input" class="cursor-pointer space-y-2 block">
+              <span class="material-symbols-outlined text-4xl text-earth-muted">cloud_upload</span>
+              <p class="text-xs font-bold text-earth-primary">คลิกเลือกรูปภาพหนังสือจากเครื่อง</p>
+              <p class="text-[10px] text-earth-muted">รองรับ JPG, PNG, WEBP</p>
+            </label>
+          </div>
+
+          <!-- Preview Container -->
+          <div id="preview-box" class="hidden space-y-2">
+            <span class="text-xs font-bold text-earth-sage">✓ พรีวิวภาพถ่ายจริง:</span>
+            <img id="uploaded-preview" src="" class="w-full h-64 object-cover rounded-xl border border-earth-border shadow-sm"/>
+          </div>
+        </div>
+
+        <!-- Book Info Form -->
+        <div class="md:col-span-7 space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-earth-primary mb-1">ชื่อหนังสือ *</label>
+            <input type="text" id="input-title" placeholder="เช่น สุขุม ละเมียด ละไม (Wabi Sabi)" class="w-full px-4 py-2 border border-earth-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-earth-accent"/>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-earth-primary mb-1">ผู้แต่ง *</label>
+              <input type="text" id="input-author" placeholder="ชื่อผู้แต่ง..." class="w-full px-4 py-2 border border-earth-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-earth-accent"/>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-earth-primary mb-1">หมวดหมู่ *</label>
+              <select id="input-category" class="w-full px-4 py-2 border border-earth-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-earth-accent">
+                <option value="จิตวิทยา & พัฒนาตนเอง">จิตวิทยา & พัฒนาตนเอง</option>
+                <option value="วรรณกรรม & นิยายแปล">วรรณกรรม & นิยายแปล</option>
+                <option value="ธุรกิจ & การลงทุน">ธุรกิจ & การลงทุน</option>
+                <option value="หนังสือภาพ & ไลฟ์สไตล์">หนังสือภาพ & ไลฟ์สไตล์</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-earth-primary mb-1">ราคาขายส่งต่อ (฿)</label>
+              <input type="number" id="input-buy-price" value="240" class="w-full px-4 py-2 border border-earth-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-earth-accent"/>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-earth-primary mb-1">ค่าเช่าต่อวัน (฿/วัน)</label>
+              <input type="number" id="input-rent-price" value="6" class="w-full px-4 py-2 border border-earth-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-earth-accent"/>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-earth-primary mb-1">คำอธิบายหนังสือย่อ</label>
+            <textarea id="input-desc" rows="3" placeholder="ระบุเรื่องย่อ หรือสภาพหนังสือเพิ่มเติม..." class="w-full px-4 py-2 border border-earth-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-earth-accent"></textarea>
+          </div>
+
+          <button onclick="submitNewBook()" class="w-full py-3 bg-earth-primary text-white font-bold text-sm rounded-xl hover:bg-earth-accent transition shadow-md">
+            💾 บันทึกและลงทะเบียนหนังสือ
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
 
   <script>
     const BOOKS = [
@@ -1257,117 +1361,8 @@
       renderCategories();
       renderBooks();
       updateCartCounters();
-    });
-  </script>
-</body>
-</html>
-
-   <!-- MAIN CONTAINER -->
-  <main class="max-w-7xl mx-auto px-4 py-6">
-
-    <!-- VIEW 1: HOME PAGE -->
-    <div id="view-home" class="space-y-6">
-      <div class="flex flex-wrap gap-2" id="category-pills"></div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="book-grid"></div>
-    </div>
-
-    <!-- VIEW 2: BOOK DETAIL -->
-    <div id="view-detail" class="hidden space-y-6">
-      <button onclick="showView('home')" class="px-4 py-2 bg-white border border-earth-border rounded-xl text-xs font-bold text-earth-primary">
-        ← กลับหน้าหลัก
-      </button>
-
-      <div class="bg-white rounded-3xl p-6 border border-earth-border grid grid-cols-1 md:grid-cols-12 gap-8">
-        <div class="md:col-span-5">
-          <img id="detail-img" src="" class="w-full h-80 object-contain rounded-2xl bg-earth-bg border border-earth-border p-2"/>
-        </div>
-        <div class="md:col-span-7 space-y-4">
-          <span id="detail-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-earth-sage-light text-earth-sage-dark"></span>
-          <h2 id="detail-title" class="text-2xl font-bold text-earth-primary"></h2>
-          <p id="detail-author" class="text-xs text-earth-muted"></p>
-          <p id="detail-desc" class="text-sm bg-earth-bg p-4 rounded-xl border border-earth-border"></p>
-          
-          <div id="action-container" class="pt-4"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- VIEW 3: ADD NEW BOOK FORM -->
-    <div id="view-seller-add" class="hidden space-y-6">
-      <h2 class="text-2xl font-bold text-earth-primary flex items-center gap-2">
-        <span class="material-symbols-outlined text-earth-accent">add_photo_alternate</span> ลงทะเบียนหนังสือใหม่เข้าสู่ระบบ
-      </h2>
-
-      <div class="bg-white rounded-3xl p-6 border border-earth-border grid grid-cols-1 md:grid-cols-12 gap-8">
-        <!-- Photo Upload Section -->
-        <div class="md:col-span-5 space-y-4">
-          <label class="block text-sm font-bold text-earth-primary">อัปโหลดรูปภาพหนังสือจริง *</label>
-          
-          <div class="border-2 border-dashed border-earth-border bg-earth-bg p-6 rounded-2xl text-center cursor-pointer hover:border-earth-accent transition">
-            <input type="file" id="file-input" accept="image/*" onchange="handleFileUpload(event)" class="hidden"/>
-            <label for="file-input" class="cursor-pointer space-y-2 block">
-              <span class="material-symbols-outlined text-4xl text-earth-muted">cloud_upload</span>
-              <p class="text-xs font-bold text-earth-primary">คลิกเลือกรูปภาพหนังสือจากเครื่อง</p>
-              <p class="text-[10px] text-earth-muted">รองรับ JPG, PNG, WEBP</p>
-            </label>
-          </div>
-
-          <!-- Preview Container -->
-          <div id="preview-box" class="hidden space-y-2">
-            <span class="text-xs font-bold text-earth-sage">✓ พรีวิวภาพถ่ายจริง:</span>
-            <img id="uploaded-preview" src="" class="w-full h-64 object-cover rounded-xl border border-earth-border shadow-sm"/>
-          </div>
-        </div>
-
-        <!-- Book Info Form -->
-        <div class="md:col-span-7 space-y-4">
-          <div>
-            <label class="block text-xs font-bold text-earth-primary mb-1">ชื่อหนังสือ *</label>
-            <input type="text" id="input-title" placeholder="เช่น สุขุม ละเมียด ละไม (Wabi Sabi)" class="w-full px-4 py-2 border border-earth-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-earth-accent"/>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-bold text-earth-primary mb-1">ผู้แต่ง *</label>
-              <input type="text" id="input-author" placeholder="ชื่อผู้แต่ง..." class="w-full px-4 py-2 border border-earth-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-earth-accent"/>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-earth-primary mb-1">หมวดหมู่ *</label>
-              <select id="input-category" class="w-full px-4 py-2 border border-earth-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-earth-accent">
-                <option value="จิตวิทยา & พัฒนาตนเอง">จิตวิทยา & พัฒนาตนเอง</option>
-                <option value="วรรณกรรม & นิยายแปล">วรรณกรรม & นิยายแปล</option>
-                <option value="ธุรกิจ & การลงทุน">ธุรกิจ & การลงทุน</option>
-                <option value="หนังสือภาพ & ไลฟ์สไตล์">หนังสือภาพ & ไลฟ์สไตล์</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-bold text-earth-primary mb-1">ราคาขายส่งต่อ (฿)</label>
-              <input type="number" id="input-buy-price" value="240" class="w-full px-4 py-2 border border-earth-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-earth-accent"/>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-earth-primary mb-1">ค่าเช่าต่อวัน (฿/วัน)</label>
-              <input type="number" id="input-rent-price" value="6" class="w-full px-4 py-2 border border-earth-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-earth-accent"/>
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-earth-primary mb-1">คำอธิบายหนังสือย่อ</label>
-            <textarea id="input-desc" rows="3" placeholder="ระบุเรื่องย่อ หรือสภาพหนังสือเพิ่มเติม..." class="w-full px-4 py-2 border border-earth-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-earth-accent"></textarea>
-          </div>
-
-          <button onclick="submitNewBook()" class="w-full py-3 bg-earth-primary text-white font-bold text-sm rounded-xl hover:bg-earth-accent transition shadow-md">
-            💾 บันทึกและลงทะเบียนหนังสือ
-          </button>
-        </div>
-      </div>
-    </div>
-
-  </main>
-
-  <script>
+    })
+ 
     let booksData = [
       {
         id: 1, title: 'Atomic Habits (ฉบับแปลไทย)', author: 'James Clear',
