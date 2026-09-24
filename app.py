@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+ffrom datetime import date, timedelta
 import base64
 import streamlit as st
 
@@ -444,6 +444,9 @@ st.markdown("<hr style='border:0; border-top:1px solid #EADBCE; margin:8px 0 20p
 # ==============================================================================
 # 6. VIEW 1: HOME PAGE
 # ==============================================================================
+if st.session_state.get('toast_msg'):
+    st.toast(st.session_state.pop('toast_msg'), icon="🎉")
+
 if st.session_state.current_view == 'home':
     col_srch, col_to_cart = st.columns([4, 1.2])
     with col_srch:
@@ -733,8 +736,16 @@ elif st.session_state.current_view == 'seller':
         if uploaded_file is not None:
             st.image(uploaded_file, caption="รูปภาพหนังสือที่คุณอัปโหลด", use_container_width=True)
             bytes_data = uploaded_file.getvalue()
-            b64_img = base64.b64encode(bytes_data).decode()
-            uploaded_img_url = f"data:image/png;base64,{b64_img}"
+            try:
+                import io
+                from PIL import Image
+                img_pil = Image.open(io.BytesIO(bytes_data)).convert("RGB")
+                img_pil.thumbnail((800, 800))
+                buf = io.BytesIO()
+                img_pil.save(buf, format="JPEG", quality=80)
+                uploaded_img_url = "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()
+            except Exception:
+                uploaded_img_url = "data:image/png;base64," + base64.b64encode(bytes_data).decode()
         else:
             st.info("💡 สามารถลองอัปโหลดรูปหนังสือจริงเพื่อพรีวิวได้ หากไม่ได้อัปโหลดจะใช้รูปตัวอย่างเริ่มต้นแทน")
             st.image("https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=300&q=80", width=140, caption="ตัวอย่างภาพปก")
@@ -793,7 +804,7 @@ elif st.session_state.current_view == 'seller':
                 # Clear form
                 reset_add_book_form()
                 
-                st.toast(f"ลงทะเบียน '{b_title_input}' สำเร็จแล้ว!", icon="🎉")
+                st.session_state['toast_msg'] = f"ลงทะเบียน '{b_title_input}' สำเร็จแล้ว!"
                 st.rerun()
 
     st.markdown("</div>", unsafe_allow_html=True)
