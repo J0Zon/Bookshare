@@ -1,8 +1,9 @@
 from datetime import date, timedelta
+import base64
 import streamlit as st
 
 # ==============================================================================
-# 1. Page Configuration & Custom Styling (Earth Tone Minimal)
+# 1. Page Configuration & Custom Styling
 # ==============================================================================
 st.set_page_config(
     page_title="BookShare - ร้านหนังสือ & เช่ายืมออนไลน์",
@@ -113,13 +114,6 @@ st.markdown(
         margin-bottom: 20px;
         max-width: 580px;
     }
-    .hero-stat-card {
-        background-color: #FFFFFF;
-        border: 1px solid #E8DDD0;
-        border-radius: 14px;
-        padding: 10px 16px;
-        box-shadow: 0 2px 8px rgba(61,46,36,0.03);
-    }
 
     /* Book Cards */
     .card-book {
@@ -178,15 +172,6 @@ st.markdown(
         border-radius: 10px !important;
         border: 1px solid #DACABD !important;
         background-color: #FFFFFF !important;
-    }
-
-    /* Seller Center Specific Styling */
-    .pricing-box-container {
-        background-color: #FAF5EF;
-        border: 1px solid #EADBCE;
-        border-radius: 16px;
-        padding: 16px;
-        margin-top: 14px;
     }
     </style>
     """,
@@ -297,9 +282,6 @@ if 'all_books' not in st.session_state:
 if 'current_view' not in st.session_state:
     st.session_state.current_view = 'home'
 
-if 'seller_subview' not in st.session_state:
-    st.session_state.seller_subview = 'add_book'
-
 if 'selected_book_id' not in st.session_state:
     st.session_state.selected_book_id = 1
 
@@ -309,7 +291,6 @@ if 'active_category' not in st.session_state:
 if 'search_query' not in st.session_state:
     st.session_state.search_query = ''
 
-# Form clearing trigger key
 if 'form_key_suffix' not in st.session_state:
     st.session_state.form_key_suffix = 0
 
@@ -324,6 +305,7 @@ if 'user' not in st.session_state:
 
 if 'cart_rent' not in st.session_state:
     st.session_state.cart_rent = []
+
 if 'cart_buy' not in st.session_state:
     st.session_state.cart_buy = []
 
@@ -342,7 +324,6 @@ def get_book(book_id):
             return b
     return st.session_state.all_books[0]
 
-# Helper for resetting form state
 def reset_add_book_form():
     st.session_state.form_key_suffix += 1
 
@@ -413,9 +394,8 @@ with c_nav:
         if st.button("วิธียืม-คืน", key="nav_hw", use_container_width=True):
             how_it_works_dialog()
     with n4:
-        if st.button("สำหรับผู้ขาย", key="nav_s", use_container_width=True):
+        if st.button("ลงทะเบียนหนังสือ", key="nav_s", use_container_width=True):
             st.session_state.current_view = 'seller'
-            st.session_state.seller_subview = 'add_book'
             reset_add_book_form()
             st.rerun()
 
@@ -465,7 +445,6 @@ st.markdown("<hr style='border:0; border-top:1px solid #EADBCE; margin:8px 0 20p
 # 6. VIEW 1: HOME PAGE
 # ==============================================================================
 if st.session_state.current_view == 'home':
-    # Search bar & Quick action
     col_srch, col_to_cart = st.columns([4, 1.2])
     with col_srch:
         st.session_state.search_query = st.text_input(
@@ -511,9 +490,9 @@ if st.session_state.current_view == 'home':
             unsafe_allow_html=True
         )
 
-    # Categories including "หนังสือของคุณ"
+    # Categories
     st.markdown("<h3 style='margin:10px 0 6px 0; font-size:20px; color:#4A3528;'>หมวดหมู่ยอดนิยม</h3>", unsafe_allow_html=True)
-    cats = ["ทั้งหมด", "📘 หนังสือของคุณ", "วรรณกรรม & นิยายแปล", "จิตวิทยา & พัฒนาตนเอง", "ธุรกิจ & การลงทุน", "หนังสือภาพ & ไลฟ์สไตล์", "วรรณกรรมคลาสสิก"]
+    cats = ["ทั้งหมด", "📘 หนังสือของคุณ", "วรรณกรรม & นิยายแปล", "จิตวิทยา & พัฒนาตนเอง", "ธุรกิจ & การลงทุน", "หนังสือภาพ & ไลฟ์สไตล์"]
     c_cols = st.columns(len(cats))
     for i, c in enumerate(cats):
         with c_cols[i]:
@@ -601,7 +580,7 @@ elif st.session_state.current_view == 'detail':
             st.session_state.current_view = 'home'
             st.rerun()
     with b2:
-        st.markdown(f"<div style='font-size:13px; color:#8D7B68; padding-top:6px;'>หน้าแรก / หมวด{book['category']} / <b style='color:#4A3528;'>{book['title']}</b></div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='font-size:13px; color:#8D7B68; padding-top:6px;'>หน้าแรก / หมวด {book['category']} / <b style='color:#4A3528;'>{book['title']}</b></div>", unsafe_allow_html=True)
 
     col_l, col_r = st.columns([4.2, 5.8], gap="large")
 
@@ -622,7 +601,7 @@ elif st.session_state.current_view == 'detail':
         st.markdown(
             f"""
             <h2 style="margin:0 0 4px 0; font-size:24px; color:#4A3528; line-height:1.2;">{book.get('full_title', book['title'])}</h2>
-            <div style="font-size:12px; color:#6C5E53; margin-bottom:10px;">{book['author']}</div>
+            <div style="font-size:12px; color:#6C5E53; margin-bottom:10px;">ผู้แต่ง: {book['author']} | หมวดหมู่: {book['category']}</div>
             <p style="font-size:12px; color:#4A3528; line-height:1.6; background-color:#FAF6F0; padding:10px 14px; border-radius:12px; border:1px solid #EADBCE;">
                 {book['desc']}
             </p>
@@ -632,19 +611,23 @@ elif st.session_state.current_view == 'detail':
 
         if not book.get('is_my_book', False):
             mode_choice = st.radio(
-                "เลือกรูปแบบ",
+                "เลือกรูปแบบที่ต้องการ",
                 options=['rent', 'buy'],
-                format_func=lambda x: f"📖 ยืมอ่าน (฿{book['rent_price']}/วัน)" if x == 'rent' else f"🛍️ ซื้อขาด (฿{book['buy_price']})",
+                format_func=lambda x: f"📖 ยืมอ่าน (฿{book['rent_price']}/วัน + มัดจำ ฿{book['deposit']})" if x == 'rent' else f"🛍️ ซื้อขาด (฿{book['buy_price']})",
                 key=f"mode_choice_{book['id']}"
             )
 
-            if st.button("🛒 ใส่ตะกร้า", use_container_width=True):
+            if mode_choice == 'rent':
+                rent_days = st.slider("จำนวนวันที่ต้องการยืม", min_value=3, max_value=30, value=7)
+                st.info(f"ค่ายืมรวม: ฿{book['rent_price'] * rent_days} (มัดจำคืนได้: ฿{book['deposit']})")
+
+            if st.button("🛒 เพิ่มลงในตะกร้า", use_container_width=True):
                 if mode_choice == 'rent':
                     st.session_state.cart_rent.append({
                         'id': book['id'], 'title': book['title'], 'author': book['author'],
-                        'condition': book['condition'], 'rent_days': 7, 'start_date': '2026-09-24',
-                        'return_date': '2026-10-01', 'rate_per_day': book['rent_price'],
-                        'total_rent': book['rent_price'] * 7, 'deposit': book['deposit'], 'img': book['img']
+                        'condition': book['condition'], 'rent_days': rent_days, 'start_date': str(date.today()),
+                        'return_date': str(date.today() + timedelta(days=rent_days)), 'rate_per_day': book['rent_price'],
+                        'total_rent': book['rent_price'] * rent_days, 'deposit': book['deposit'], 'img': book['img']
                     })
                 else:
                     st.session_state.cart_buy.append({
@@ -652,23 +635,86 @@ elif st.session_state.current_view == 'detail':
                         'condition': book['condition'], 'buy_price': book['buy_price'],
                         'original_price': book['original_price'], 'img': book['img']
                     })
-                st.toast("เพิ่มลงในตะกร้าเรียบร้อยแล้ว!")
+                st.toast("เพิ่มลงในตะกร้าเรียบร้อยแล้ว!", icon="🛒")
         else:
             st.button("🚫 ไม่สามารถกดสั่งซื้อหนังสือของตัวเองได้", disabled=True, use_container_width=True)
 
 # ==============================================================================
-# 8. VIEW 3: CART & CHECKOUT
+# 8. VIEW 3: CART & CHECKOUT PAGE
 # ==============================================================================
 elif st.session_state.current_view == 'cart':
-    st.title("👜 ตะกร้าสินค้า")
+    st.markdown("<h2>👜 ตะกร้าสินค้าและการชำระเงิน</h2>", unsafe_allow_html=True)
+    
     tot_cnt = len(st.session_state.cart_rent) + len(st.session_state.cart_buy)
     if tot_cnt == 0:
-        st.info("ตะกร้ายังว่างอยู่")
+        st.info("ตะกร้าสินค้าของคุณยังว่างอยู่ ลองไปเลือกชมหนังสือหน้าแรกดูสิ!")
+        if st.button("← เลือกชมหนังสือ"):
+            st.session_state.current_view = 'home'
+            st.rerun()
     else:
-        st.write(f"รายการยืม: {len(st.session_state.cart_rent)} เล่ม | รายการซื้อ: {len(st.session_state.cart_buy)} เล่ม")
+        c_left, c_right = st.columns([6, 4], gap="large")
+        
+        with c_left:
+            if st.session_state.cart_rent:
+                st.markdown("### 📖 รายการยืมหนังสือ")
+                for i, r_item in enumerate(st.session_state.cart_rent):
+                    st.markdown(f"**{r_item['title']}** ({r_item['rent_days']} วัน)")
+                    st.write(f"ค่ายืม: ฿{r_item['total_rent']} | ค่ามัดจำ: ฿{r_item['deposit']}")
+                    if st.button(f"ลบรายการเช่าที่ {i+1}", key=f"del_r_{i}"):
+                        st.session_state.cart_rent.pop(i)
+                        st.rerun()
+                    st.markdown("---")
+
+            if st.session_state.cart_buy:
+                st.markdown("### 🛍️ รายการซื้อขาด")
+                for j, b_item in enumerate(st.session_state.cart_buy):
+                    st.markdown(f"**{b_item['title']}** - ฿{b_item['buy_price']}")
+                    if st.button(f"ลบรายการซื้อที่ {j+1}", key=f"del_b_{j}"):
+                        st.session_state.cart_buy.pop(j)
+                        st.rerun()
+                    st.markdown("---")
+
+        with c_right:
+            st.markdown("<div style='background-color:#FFFFFF; border:1px solid #EADBCE; border-radius:16px; padding:20px;'>", unsafe_allow_html=True)
+            st.markdown("### 📋 สรุปยอดชำระ")
+            
+            rent_sum = sum(x['total_rent'] for x in st.session_state.cart_rent)
+            deposit_sum = sum(x['deposit'] for x in st.session_state.cart_rent)
+            buy_sum = sum(x['buy_price'] for x in st.session_state.cart_buy)
+            grand_total = rent_sum + deposit_sum + buy_sum
+
+            st.write(f"ค่าบริการยืมรวม: ฿{rent_sum}")
+            st.write(f"เงินมัดจำรวม (ได้รับคืนเมื่อส่งคืนหนังสือ): ฿{deposit_sum}")
+            st.write(f"ราคาสินค้าสั่งซื้อรวม: ฿{buy_sum}")
+            st.markdown(f"### **ยอดสุทธิ: ฿{grand_total}**")
+
+            if st.button("💳 ยืนยันการสั่งซื้อและชำระเงิน", use_container_width=True):
+                st.session_state.last_order = {
+                    'rent_items': st.session_state.cart_rent.copy(),
+                    'buy_items': st.session_state.cart_buy.copy(),
+                    'total': grand_total
+                }
+                st.session_state.cart_rent = []
+                st.session_state.cart_buy = []
+                st.session_state.current_view = 'order_success'
+                st.rerun()
+                
+            st.markdown("</div>", unsafe_allow_html=True)
 
 # ==============================================================================
-# 9. VIEW 4: SELLER CENTER & ADD BOOK
+# 9. VIEW 4: ORDER SUCCESS PAGE
+# ==============================================================================
+elif st.session_state.current_view == 'order_success':
+    st.balloons()
+    st.success("🎉 ชำระเงินและทำรายการสำเร็จ!")
+    st.markdown("ทางเรากำลังเตรียมการจัดส่งหนังสือให้คุณอย่างเร็วที่สุด")
+    
+    if st.button("← กลับสู่หน้าหลัก", use_container_width=True):
+        st.session_state.current_view = 'home'
+        st.rerun()
+
+# ==============================================================================
+# 10. VIEW 5: SELLER CENTER & ADD BOOK PAGE
 # ==============================================================================
 elif st.session_state.current_view == 'seller':
     k_suf = st.session_state.form_key_suffix
@@ -686,7 +732,6 @@ elif st.session_state.current_view == 'seller':
         
         if uploaded_file is not None:
             st.image(uploaded_file, caption="รูปภาพหนังสือที่คุณอัปโหลด", use_container_width=True)
-            import base64
             bytes_data = uploaded_file.getvalue()
             b64_img = base64.b64encode(bytes_data).decode()
             uploaded_img_url = f"data:image/png;base64,{b64_img}"
@@ -699,7 +744,7 @@ elif st.session_state.current_view == 'seller':
     with col_form_right:
         b_title_input = st.text_input("ชื่อหนังสือ (Book Title) *", value="", placeholder="กรอกชื่อหนังสือ...", key=f"title_{k_suf}")
         b_author_input = st.text_input("ผู้แต่ง (Author) *", value="", placeholder="กรอกชื่อผู้แต่ง...", key=f"auth_{k_suf}")
-        b_cat_input = st.selectbox("หมวดหมู่หนังสือ *", ["จิตวิทยา & พัฒนาตนเอง", "วรรณกรรม & นิยายแปล", "ธุรกิจ & การลงทุน", "หนังสือภาพ & ไลฟ์สไตล์", "วรรณกรรมคลาสสิก"], key=f"cat_{k_suf}")
+        b_cat_input = st.selectbox("หมวดหมู่หนังสือ *", ["จิตวิทยา & พัฒนาตนเอง", "วรรณกรรม & นิยายแปล", "ธุรกิจ & การลงทุน", "หนังสือภาพ & ไลฟ์สไตล์"], key=f"cat_{k_suf}")
 
         p_col1, p_col2 = st.columns(2)
         with p_col1:
@@ -738,14 +783,14 @@ elif st.session_state.current_view == 'seller':
                     'is_my_book': True
                 }
                 
-                # Insert at top of list
+                # Insert to top
                 st.session_state.all_books.insert(0, new_book_item)
                 
-                # Auto switch category to show the user's new book on Home
+                # Switch to home view
                 st.session_state.active_category = "📘 หนังสือของคุณ"
                 st.session_state.current_view = 'home'
                 
-                # Reset form for next time entry
+                # Clear form
                 reset_add_book_form()
                 
                 st.toast(f"ลงทะเบียน '{b_title_input}' สำเร็จแล้ว!", icon="🎉")

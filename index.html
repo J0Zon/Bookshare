@@ -56,6 +56,13 @@
         <button onclick="showView('home')" class="text-earth-primary font-bold">หน้าแรก</button>
         <button onclick="showView('seller-add')" class="text-earth-muted hover:text-earth-primary">ลงทะเบียนหนังสือใหม่</button>
       </nav>
+
+      <div class="flex items-center gap-3">
+        <button onclick="showView('cart')" class="px-4 py-2 bg-earth-sage-light border border-earth-sage text-earth-sage-dark rounded-full text-xs font-bold flex items-center gap-1">
+          <span>📖 ตะกร้า</span>
+          <span id="cart-count-badge" class="bg-earth-sage-dark text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px]">0</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -89,7 +96,13 @@
       </div>
     </div>
 
-    <!-- VIEW 3: ADD NEW BOOK FORM -->
+    <!-- VIEW 3: CART PAGE -->
+    <div id="view-cart" class="hidden space-y-6">
+      <h2 class="text-2xl font-bold text-earth-primary">👜 ตะกร้าสินค้า</h2>
+      <div id="cart-items-container" class="bg-white rounded-3xl p-6 border border-earth-border space-y-4"></div>
+    </div>
+
+    <!-- VIEW 4: ADD NEW BOOK FORM -->
     <div id="view-seller-add" class="hidden space-y-6">
       <h2 class="text-2xl font-bold text-earth-primary flex items-center gap-2">
         <span class="material-symbols-outlined text-earth-accent">add_photo_alternate</span> ลงทะเบียนหนังสือใหม่เข้าสู่ระบบ
@@ -171,9 +184,16 @@
         category: 'จิตวิทยา & พัฒนาตนเอง', buyPrice: 280, rentPrice: 7,
         img: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80',
         desc: 'หนังสือระดับโลกที่จะเปลี่ยนความคิดและพฤติกรรมทีละ 1%', isMyBook: false
+      },
+      {
+        id: 2, title: 'ปาฏิหาริย์ร้านชำของคุณนามิยะ', author: 'ฮิงาชิโนะ เคโงะ',
+        category: 'วรรณกรรม & นิยายแปล', buyPrice: 245, rentPrice: 6,
+        img: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80',
+        desc: 'เรื่องราวความผูกพันและจดหมายปรึกษาปัญหาจากอดีต', isMyBook: false
       }
     ];
 
+    let cartList = [];
     let currentCategory = 'ทั้งหมด';
     let uploadedImageBase64 = null;
 
@@ -308,7 +328,7 @@
         badge.innerText = '🟢 พร้อมให้ยืม/ซื้อ';
         badge.className = 'px-3 py-1 rounded-full text-xs font-bold bg-earth-sage-light text-earth-sage-dark';
         actionContainer.innerHTML = `
-          <button onclick="alert('เพิ่มลงตะกร้าเรียบร้อย')" class="w-full py-3 bg-earth-primary text-white font-bold text-xs rounded-xl hover:bg-earth-accent transition">
+          <button onclick="addToCart(${book.id})" class="w-full py-3 bg-earth-primary text-white font-bold text-xs rounded-xl hover:bg-earth-accent transition">
             🛒 เพิ่มลงในตะกร้าสินค้า
           </button>
         `;
@@ -317,9 +337,42 @@
       showView('detail');
     }
 
+    function addToCart(bookId) {
+      const book = booksData.find(b => b.id === bookId);
+      if (book) {
+        cartList.push(book);
+        document.getElementById('cart-count-badge').innerText = cartList.length;
+        alert(`เพิ่ม "${book.title}" ลงในตะกร้าแล้ว`);
+      }
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cart-items-container');
+      if (cartList.length === 0) {
+        container.innerHTML = `<div class="text-center text-earth-muted py-6">ไม่มีสินค้าในตะกร้า</div>`;
+        return;
+      }
+      container.innerHTML = cartList.map((item, idx) => `
+        <div class="flex items-center justify-between border-b border-earth-border pb-3">
+          <div>
+            <b class="text-sm text-earth-primary">${item.title}</b>
+            <p class="text-xs text-earth-muted">฿${item.buyPrice}</p>
+          </div>
+          <button onclick="removeFromCart(${idx})" class="text-xs text-red-500 font-bold">ลบ</button>
+        </div>
+      `).join('');
+    }
+
+    function removeFromCart(index) {
+      cartList.splice(index, 1);
+      document.getElementById('cart-count-badge').innerText = cartList.length;
+      renderCart();
+    }
+
     function showView(viewName) {
       document.getElementById('view-home').classList.add('hidden');
       document.getElementById('view-detail').classList.add('hidden');
+      document.getElementById('view-cart').classList.add('hidden');
       document.getElementById('view-seller-add').classList.add('hidden');
 
       if (viewName === 'seller-add') {
@@ -327,6 +380,9 @@
         document.getElementById('view-seller-add').classList.remove('hidden');
       } else if (viewName === 'detail') {
         document.getElementById('view-detail').classList.remove('hidden');
+      } else if (viewName === 'cart') {
+        renderCart();
+        document.getElementById('view-cart').classList.remove('hidden');
       } else {
         renderCategoryPills();
         renderBooks();
